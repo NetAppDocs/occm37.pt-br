@@ -1,0 +1,414 @@
+---
+sidebar: sidebar 
+permalink: reference_new_occm.html 
+keywords: 'what"s new, features, new, release notes, bugs, limitations, known issues, enhancements, fixes' 
+summary: O Cloud Manager normalmente apresenta uma nova versão todos os meses para oferecer novos recursos, melhorias e correções de bugs. 
+---
+= Novidades do Cloud Manager 3,7
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O Cloud Manager normalmente apresenta uma nova versão todos os meses para oferecer novos recursos, melhorias e correções de bugs.
+
+
+TIP: Procurando um lançamento anterior? link:https://docs.netapp.com/us-en/occm36/reference_new_occm.html["Novidades em 3,6"^] link:https://docs.netapp.com/us-en/occm35/reference_new_occm.html["Novidades em 3,5"^] link:https://docs.netapp.com/us-en/occm34/reference_new_occm.html["Novidades em 3,4"^]
+
+
+
+== Atualização do Cloud Manager 3.7.5 (16 dez 2019)
+
+Esta atualização inclui as seguintes melhorias:
+
+* <<Cloud Volumes ONTAP 9,7>>
+* <<Cloud Compliance para Cloud Volumes ONTAP>>
+
+
+
+
+=== Cloud Volumes ONTAP 9,7
+
+O Cloud Volumes ONTAP 9,7 já está disponível na AWS, Azure e Google Cloud Platform.
+
+https://docs.netapp.com/us-en/cloud-volumes-ontap/reference_new_97.html["Veja as novidades do Cloud Volumes ONTAP 9,7"^].
+
+
+
+=== Cloud Compliance para Cloud Volumes ONTAP
+
+O Cloud Compliance é um serviço de conformidade e privacidade de dados para Cloud Volumes ONTAP na AWS e no Azure. Usando tecnologia orientada por inteligência artificial (AI), o Cloud Compliance ajuda as organizações a entender o contexto dos dados e identificar dados confidenciais em sistemas Cloud Volumes ONTAP.
+
+Atualmente, o Cloud Compliance está disponível como uma versão de disponibilidade controlada.
+
+link:concept_cloud_compliance.html["Saiba mais sobre o Cloud Compliance"].
+
+
+
+== Cloud Manager 3.7.5 (3 dez 2019)
+
+O Cloud Manager 3.7.5 inclui os seguintes aprimoramentos.
+
+* <<Alta velocidade de gravação para Cloud Volumes ONTAP no GCP>>
+* <<Clusters ONTAP on-premises como storage persistente para Kubernetes>>
+* <<Versão mais recente do Trident para Kubernetes>>
+* <<Suporte para contas de armazenamento v2 de uso geral do Azure>>
+* <<Prefixos em nomes de contas de armazenamento do Azure usando APIs>>
+
+
+
+
+=== Alta velocidade de gravação para Cloud Volumes ONTAP no GCP
+
+Agora, você pode habilitar a alta velocidade de gravação em sistemas Cloud Volumes ONTAP novos e existentes no Google Cloud Platform. A alta velocidade de gravação é uma boa opção se for necessária uma performance de gravação rápida para seus workloads.
+
+* link:task_planning_your_config.html#choosing-a-write-speed["Saiba como escolher uma velocidade de escrita"]
+* link:task_modifying_ontap_cloud.html#changing-write-speed-to-normal-or-high["Saiba como alterar a velocidade de gravação em sistemas existentes"]
+
+
+
+
+=== Clusters ONTAP on-premises como storage persistente para Kubernetes
+
+O Cloud Manager agora permite que você use clusters ONTAP no local como storage persistente para contêineres. Semelhante ao Cloud Volumes ONTAP, o Cloud Manager automatiza a implantação do NetApp Trident e o conecta o ONTAP aos clusters do Kubernetes.
+
+Depois de adicionar um cluster do Kubernetes ao Cloud Manager, você pode conectá-lo aos clusters do ONTAP no local na página ambientes de trabalho:
+
+image:screenshot_kubernetes_connect_onprem.gif["Uma captura de tela da página ambientes de trabalho, um sistema ONTAP no local e o botão conetar para Kubernetes. Este botão está disponível depois de selecionar o ambiente de trabalho."]
+
+link:task_connecting_kubernetes.html["Saiba como começar"].
+
+
+
+=== Versão mais recente do Trident para Kubernetes
+
+O Cloud Manager agora instala uma versão mais recente do Trident (versão 19.07.1) quando você conecta um ambiente de trabalho a um cluster do Kubernetes.
+
+
+
+=== Suporte para contas de armazenamento v2 de uso geral do Azure
+
+Ao implantar novos sistemas Cloud Volumes ONTAP no Azure, as contas de storage criadas pelo Cloud Manager para diagnósticos e categorização de dados agora são contas de storage v2 de uso geral.
+
+
+
+=== Prefixos em nomes de contas de armazenamento do Azure usando APIs
+
+Agora você pode adicionar um prefixo aos nomes das contas de storage do Azure criadas pelo Cloud Manager para Cloud Volumes ONTAP. Basta usar o parâmetro _storageAccountPrefix_ quando você implantar um novo sistema Cloud Volumes ONTAP no Azure.
+
+link:api.html["Consulte o Guia do desenvolvedor de API para obter mais detalhes sobre como usar APIs"].
+
+
+
+== Cloud Manager 3.7.4 (6 de outubro de 2019)
+
+O Cloud Manager 3.7.4 inclui os seguintes aprimoramentos.
+
+* <<Suporte para Azure NetApp Files>>
+* <<Aprimoramentos do Cloud Volumes ONTAP para GCP>>
+* <<Backup para aprimoramento do S3>>
+* <<Criptografia de discos de inicialização e raiz na AWS>>
+* <<Suporte para a região da AWS Bahrain>>
+* <<Suporte para a região Norte do Azure UAE>>
+
+
+
+
+=== Suporte para Azure NetApp Files
+
+Agora você pode visualizar e criar volumes NFS para Azure NetApp Files diretamente no Cloud Manager. Essa melhoria continua nossa meta de ajudar você a gerenciar seu storage de nuvem a partir de uma única interface.
+
+link:task_manage_anf.html["Saiba como começar"].
+
+Esse recurso requer novas permissões, como mostrado na última https://occm-sample-policies.s3.amazonaws.com/Policy_for_cloud_Manager_Azure_3.7.4.json["Política do Cloud Manager para Azure"^].
+
+[source, json]
+----
+"Microsoft.NetApp/netAppAccounts/read",
+"Microsoft.NetApp/netAppAccounts/capacityPools/read",
+"Microsoft.NetApp/netAppAccounts/capacityPools/volumes/write",
+"Microsoft.NetApp/netAppAccounts/capacityPools/volumes/read",
+"Microsoft.NetApp/netAppAccounts/capacityPools/volumes/delete"
+----
+
+
+=== Aprimoramentos do Cloud Volumes ONTAP para GCP
+
+O Cloud Manager 3.7.4 permite os seguintes aprimoramentos no Cloud Volumes ONTAP para o Google Cloud Platform:
+
+Assinaturas com pagamento conforme o uso no GCP Marketplace:: Agora, você pode pagar pelo Cloud Volumes ONTAP conforme o uso, assinando o Cloud Volumes ONTAP no mercado da Plataforma de nuvem do Google.
++
+--
+https://console.cloud.google.com/marketplace/details/netapp-cloudmanager/cloud-manager["Google Cloud Platform Marketplace: Gerenciador de nuvem para Cloud Volumes ONTAP"^]
+
+--
+VPC compartilhada:: Agora, o Cloud Manager e o Cloud Volumes ONTAP são compatíveis com uma VPC compartilhada no Google Cloud Platform.
++
+--
+A VPC compartilhada permite configurar e gerenciar centralmente redes virtuais em vários projetos. Você pode configurar redes VPC compartilhadas no _projeto host_ e implantar as instâncias de máquina virtual do Cloud Manager e do Cloud Volumes ONTAP em um _projeto de serviço_. https://cloud.google.com/vpc/docs/shared-vpc["Documentação do Google Cloud: Visão geral da VPC compartilhada"^].
+
+--
+Vários projetos do Google Cloud:: O Cloud Volumes ONTAP não precisa mais estar no mesmo projeto que o Cloud Manager. Adicione a conta de serviço e a função do Cloud Manager a projetos adicionais e, em seguida, você pode escolher entre os projetos que implantar o Cloud Volumes ONTAP.
++
+--
+image:screenshot_gcp_project.gif["Uma captura de tela que mostra a opção de seleção do projeto no assistente ambiente de trabalho."]
+
+Para obter mais detalhes sobre como configurar a conta de serviço do Cloud Manager, link:task_getting_started_gcp.html#service-account["consulte o passo 4b nesta página"].
+
+--
+Chaves de criptografia gerenciadas pelo cliente ao usar APIs do Cloud Manager:: Embora o Google Cloud Storage sempre criptografe seus dados antes de serem gravados no disco, você pode usar as APIs do Cloud Manager para criar um novo sistema Cloud Volumes ONTAP que usa _chaves de criptografia gerenciadas pelo cliente_. Essas são as chaves que você gera e gerencia no GCP usando o Cloud Key Management Service.
++
+--
+Consulte link:api.html#_creating_systems_in_gcp["Guia do desenvolvedor de API"^]a para obter detalhes sobre como utilizar os parâmetros "GcpEncryption".
+
+Este recurso requer novas permissões, como mostrado na última https://occm-sample-policies.s3.amazonaws.com/Policy_for_Cloud_Manager_3.7.4_GCP.yaml["Política do Cloud Manager para GCP"^]:
+
+[source, yaml]
+----
+- cloudkms.cryptoKeyVersions.useToEncrypt
+- cloudkms.cryptoKeys.get
+- cloudkms.cryptoKeys.list
+- cloudkms.keyRings.list
+----
+--
+
+
+
+
+=== Backup para aprimoramento do S3
+
+Agora você pode excluir os backups de volumes existentes. Anteriormente, você só poderia excluir os backups de volumes que haviam sido excluídos.
+
+link:task_backup_to_s3.html["Saiba mais sobre o Backup para S3"].
+
+
+
+=== Criptografia de discos de inicialização e raiz na AWS
+
+Quando você ativa a criptografia de dados usando o AWS Key Management Service (KMS), os discos de inicialização e raiz do Cloud Volumes ONTAP também são criptografados. Isso inclui o disco de inicialização da instância de mediador em um par de HA. Os discos são criptografados usando o CMK selecionado quando você cria o ambiente de trabalho.
+
+
+NOTE: Os discos de inicialização e raiz são sempre criptografados no Azure e no Google Cloud Platform porque a criptografia é habilitada por padrão nesses provedores de nuvem.
+
+
+
+=== Suporte para a região da AWS Bahrain
+
+O Cloud Manager e o Cloud Volumes ONTAP agora são compatíveis na região da AWS Oriente Médio (Bahrein).
+
+
+
+=== Suporte para a região Norte do Azure UAE
+
+O Cloud Manager e o Cloud Volumes ONTAP agora são compatíveis na região Norte do Azure dos EAU.
+
+https://cloud.netapp.com/cloud-volumes-global-regions["Veja todas as regiões suportadas"^].
+
+
+
+== Atualização do Cloud Manager 3.7.3 (15 de setembro de 2019)
+
+O Cloud Manager agora permite fazer backup de dados do Cloud Volumes ONTAP para o Amazon S3.
+
+
+
+=== Cópia de segurança para S3
+
+O backup to S3 é um serviço complementar para Cloud Volumes ONTAP que oferece recursos de backup e restauração totalmente gerenciados para proteção e arquivamento de longo prazo de seus dados de nuvem. Os backups são armazenados no storage de objetos S3, independentemente das cópias Snapshot de volume usadas para clonagem ou recuperação próximos a prazo.
+
+link:task_backup_to_s3.html["Saiba como começar"].
+
+Este recurso requer uma atualização para o https://mysupport.netapp.com/cloudontap/iampolicies["Política do Cloud Manager"^]. As seguintes permissões de endpoint de VPC agora são necessárias:
+
+[source, json]
+----
+"ec2:DescribeVpcEndpoints",
+"ec2:CreateVpcEndpoint",
+"ec2:ModifyVpcEndpoint",
+"ec2:DeleteVpcEndpoints"
+----
+
+
+== Cloud Manager 3.7.3 (11 de setembro de 2019)
+
+O Cloud Manager 3.7.3 inclui os seguintes aprimoramentos.
+
+* <<Descoberta e gerenciamento do Cloud Volumes Service para AWS>>
+* <<É necessária uma nova assinatura no AWS Marketplace>>
+* <<Suporte para AWS GovCloud (Leste dos EUA)>>
+
+
+
+
+=== Descoberta e gerenciamento do Cloud Volumes Service para AWS
+
+O Cloud Manager agora permite que você descubra os volumes de nuvem na https://cloud.netapp.com/cloud-volumes-service-for-aws["Cloud Volumes Service para AWS"^] sua subscrição. Após a descoberta, você pode adicionar volumes de nuvem adicionais diretamente do Cloud Manager. Esse aprimoramento oferece um painel único a partir do qual você pode gerenciar o storage de nuvem do NetApp.
+
+link:task_manage_cvs_aws.html["Saiba como começar"].
+
+
+
+=== É necessária uma nova assinatura no AWS Marketplace
+
+https://aws.amazon.com/marketplace/pp/B07QX2QLXX["Uma nova assinatura está disponível no AWS Marketplace"^]. Essa assinatura única é necessária para implantar o Cloud Volumes ONTAP 9,6 PAYGO (exceto o sistema de avaliação gratuita de 30 dias). A assinatura também nos permite oferecer recursos adicionais para o Cloud Volumes ONTAP PAYGO e BYOL. Você será cobrado a partir desta assinatura para cada sistema Cloud Volumes ONTAP PAYGO que você criar e cada recurso de complemento que você ativar.
+
+A partir da versão 9,6, esse novo método de assinatura substitui as duas assinaturas existentes do AWS Marketplace para o Cloud Volumes ONTAP PAYGO às quais você se inscreveu anteriormente. Você ainda precisa de assinaturas através do https://aws.amazon.com/marketplace/search/results?x=0&y=0&searchTerms=cloud+volumes+ontap+byol["Páginas existentes do AWS Marketplace ao implantar o Cloud Volumes ONTAP BYOL"^].
+
+link:reference_aws_marketplace.html["Saiba mais sobre cada página do AWS Marketplace"].
+
+
+
+=== Suporte para AWS GovCloud (Leste dos EUA)
+
+O Cloud Manager e o Cloud Volumes ONTAP agora são compatíveis na região AWS GovCloud (Leste dos EUA).
+
+
+
+== Disponibilidade geral do Cloud Volumes ONTAP no GCP (3 de setembro de 2019)
+
+O Cloud Volumes ONTAP agora está disponível no GCP quando você usa sua própria licença (BYOL). Uma promoção de pagamento conforme o uso também está disponível. A promoção oferece licenças gratuitas para um número ilimitado de sistemas e expirará no final de setembro de 2019.
+
+* link:task_getting_started_gcp.html["Saiba como começar a usar o GCP"]
+* https://docs.netapp.com/us-en/cloud-volumes-ontap/reference_configs_gcp_96.html["Veja as configurações suportadas"^]
+
+
+
+
+== Cloud Manager 3.7.2 (5 de agosto de 2019)
+
+* <<Licenças FlexCache>>
+* <<Classes de armazenamento de Kubernetes para iSCSI>>
+* <<Gestão de inodes>>
+* <<Suporte para a região de Hong Kong na AWS>>
+* <<Suporte para as regiões Central da Austrália no Azure>>
+
+
+
+
+=== Licenças FlexCache
+
+O Cloud Manager agora gera uma licença FlexCache para todos os novos sistemas Cloud Volumes ONTAP. A licença inclui um limite de uso de 500 GB.
+
+Para gerar a licença, o Cloud Manager precisa acessar o https://ipa-signer.cloudmanager.NetApp.com. Certifique-se de que este URL está acessível a partir do firewall.
+
+
+
+=== Classes de armazenamento de Kubernetes para iSCSI
+
+Quando você conecta o Cloud Volumes ONTAP a um cluster Kubernetes, o Cloud Manager agora cria duas classes de storage adicionais do Kubernetes que podem ser usadas com volumes persistentes iSCSI:
+
+* *NetApp-file-san*: Para vincular volumes persistentes iSCSI a sistemas Cloud Volumes ONTAP de nó único
+* *NetApp-file-redundante-san*: Para vincular volumes persistentes iSCSI a pares de HA do Cloud Volumes ONTAP
+
+
+
+
+=== Gestão de inodes
+
+Agora, o Cloud Manager monitora o uso de inode em um volume. Quando 85% dos inodes são usados, o Cloud Manager aumenta o tamanho do volume para aumentar o número de inodes disponíveis. O número de arquivos que um volume pode conter é determinado por quantos inodes ele tem.
+
+
+NOTE: O Cloud Manager monitora o uso de inode somente quando o modo de gerenciamento de capacidade está definido como automático (essa é a configuração padrão).
+
+
+
+=== Suporte para a região de Hong Kong na AWS
+
+O Cloud Manager e o Cloud Volumes ONTAP agora são compatíveis na região da Ásia-Pacífico (Hong Kong) na AWS.
+
+
+
+=== Suporte para as regiões Central da Austrália no Azure
+
+O Cloud Manager e o Cloud Volumes ONTAP agora são compatíveis nas seguintes regiões do Azure:
+
+* Austrália Central
+* Austrália Central 2
+
+
+https://cloud.netapp.com/cloud-volumes-global-regions["Consulte a lista completa de regiões suportadas"^].
+
+
+
+== Atualização sobre backup e restauração (15 de julho de 2019)
+
+A partir da versão 3.7.1, o Cloud Manager não suporta mais o download de um backup e o uso dele para restaurar sua configuração do Cloud Manager. link:task_restoring.html["Você precisa seguir estas etapas para restaurar o Cloud Manager"].
+
+
+
+== Cloud Manager 3.7.1 (1 de julho de 2019)
+
+* Esta versão inclui principalmente correções de bugs.
+* Isso inclui um aprimoramento: O Cloud Manager agora instala uma licença de criptografia de volume NetApp (NVE) em cada sistema Cloud Volumes ONTAP registrado no suporte da NetApp (sistemas novos e existentes).
++
+** link:task_adding_nss_accounts.html["Adicionar contas do site de suporte da NetApp ao Cloud Manager"]
+** link:task_registering.html["Registar sistemas de pagamento conforme o uso"]
+** link:task_encrypting_volumes.html["Configurar a encriptação de volume do NetApp"]
++
+
+NOTE: O Cloud Manager não instala a licença NVE em sistemas que residem na região da China.
+
+
+
+
+
+
+
+== Atualização do Cloud Manager 3,7 (16 de junho de 2019)
+
+O Cloud Volumes ONTAP 9,6 já está disponível na AWS, no Azure e no Google Cloud Platform como uma prévia particular. Para participar da pré-visualização privada, envie uma solicitação para ng-Cloud-volume-ONTAP-preview at NetApp.com.
+
+https://docs.netapp.com/us-en/cloud-volumes-ontap/reference_new_96.html["Veja as novidades do Cloud Volumes ONTAP 9,6"^]
+
+
+
+== Cloud Manager 3,7 (5 de junho de 2019)
+
+* <<Suporte para o próximo lançamento do Cloud Volumes ONTAP 9,6>>
+* <<Contas do NetApp Cloud Central>>
+* <<Faça backup e restauração com o Cloud Backup Service>>
+
+
+
+
+=== Suporte para o próximo lançamento do Cloud Volumes ONTAP 9,6
+
+O Cloud Manager 3,7 inclui suporte para o próximo lançamento do Cloud Volumes ONTAP 9,6. A versão 9,6 inclui uma prévia privada do Cloud Volumes ONTAP na Google Cloud Platform. Atualizaremos as notas de versão quando o 9,6 estiver disponível.
+
+
+
+=== Contas do NetApp Cloud Central
+
+Aprimoramos a forma como você gerencia seus recursos de nuvem. Cada sistema do Cloud Manager será associado a uma conta _NetApp Cloud Central_. A conta possibilita a alocação a vários clientes e está planejada para outros serviços de dados de nuvem da NetApp no futuro.
+
+No Cloud Manager, uma conta do Cloud Central é um contentor para seus sistemas Cloud Manager e para os _workspaces_ nos quais os usuários implantam o Cloud Volumes ONTAP.
+
+link:concept_cloud_central_accounts.html["Saiba como as contas do Cloud Central permitem a alocação a vários clientes"].
+
+
+NOTE: O Cloud Manager precisa de acesso a _ https://cloudmanager.cloud.NetApp.com_ para se conetar ao serviço de conta do Cloud Central. Abra esse URL no firewall para garantir que o Cloud Manager possa entrar em Contato com o serviço.
+
+
+
+==== Integração do seu sistema com contas do Cloud Central
+
+Algum tempo depois de atualizar para o Cloud Manager 3,7, o NetApp escolherá sistemas específicos de gerenciamento de nuvem para integração com contas do Cloud Central. Durante esse processo, o NetApp cria uma conta, atribui novas funções a cada usuário, cria espaços de trabalho e coloca ambientes de trabalho existentes nesses espaços de trabalho. Não há interrupções nos sistemas Cloud Volumes ONTAP.
+
+link:concept_cloud_central_accounts.html#faq["Se você tiver dúvidas, consulte esta FAQ"].
+
+
+
+=== Faça backup e restauração com o Cloud Backup Service
+
+O NetApp Cloud Backup Service for Cloud Volumes ONTAP oferece recursos de backup e restauração totalmente gerenciados para proteção e arquivamento a longo prazo de seus dados de nuvem. Você pode integrar o Cloud Backup Service ao Cloud Volumes ONTAP para AWS. Os backups criados pelo serviço são armazenados no storage de objetos do AWS S3.
+
+https://cloud.netapp.com/cloud-backup-service["Saiba mais sobre o Cloud Backup Service"^].
+
+Para começar, instale e configure o agente de backup e, em seguida, inicie as operações de backup e restauração. Se precisar de ajuda, recomendamos que entre em Contato conosco usando o ícone de bate-papo no Cloud Manager.
+
+
+NOTE: Este processo manual já não é suportado. O recurso Backup to S3 foi integrado ao Cloud Manager na versão 3.7.3.

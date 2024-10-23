@@ -1,0 +1,21 @@
+---
+sidebar: sidebar 
+permalink: concept_evaluating.html 
+keywords: free trial, evaluation, evaluate 
+summary: Você pode avaliar o Cloud Volumes ONTAP antes de pagar pelo software. 
+---
+= A avaliar
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Você pode avaliar o Cloud Volumes ONTAP antes de pagar pelo software.
+
+Uma avaliação gratuita de 30 dias de um sistema Cloud Volumes ONTAP de nó único está disponível no https://cloud.netapp.com["Centro de nuvem da NetApp"^]. Não há taxas de software por hora, mas as taxas de infraestrutura ainda se aplicam. Uma avaliação gratuita se converte automaticamente em uma assinatura paga por hora quando expira.
+
+Se você precisar de ajuda com sua prova de conceito, entre em Contato https://cloud.netapp.com/contact-cds["A equipa de vendas"^] ou entre em Contato com a opção de bate-papo disponível https://cloud.netapp.com["Centro de nuvem da NetApp"^] de e no Cloud Manager.

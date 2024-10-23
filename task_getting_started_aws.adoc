@@ -1,0 +1,83 @@
+---
+pagenav: false 
+sidebar: sidebar 
+permalink: task_getting_started_aws.html 
+keywords: amazon web services, aws, netapp, data fabric, hybrid cloud, cloud, public cloud, networking, vpc, quick, getting started, install, installing, deploy, deploying, setup, setting up, launching, requirements, prerequisites, cloud central, get started, network, vpn, multi-cloud, tier, tiering, storage tier, data tier, vpc endpoint, endpoint, S3, subscribe, subscribing, marketplace, granting, permissions, policy, iam policy, ec2 console, ami, mediator, connectivity, internet, outbound, endpoint, connection, networks, replicating, ec2 service, policies, attach, iam user, access key, secret key, keys, sign up, cloud manager, cloud volumes ontap, cloud ontap, create 
+summary: Você pode começar a usar o Cloud Volumes ONTAP na AWS seguindo alguns passos rápidos. 
+---
+= Introdução ao Cloud Volumes ONTAP na AWS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Comece a usar o Cloud Volumes ONTAP configurando o AWS e, em seguida, iniciando o software Cloud Manager da NetApp Central. Uma avaliação gratuita de 30 dias está disponível para o primeiro sistema Cloud Volumes ONTAP que você lançar na AWS.
+
+
+
+=== image:number1.png["Número 1"] Configure a rede
+
+[role="quick-margin-list"]
+. Ative o acesso de saída à Internet a partir da VPC de destino para que o Cloud Manager e o Cloud Volumes ONTAP possam entrar em Contato com vários endpoints.
++
+Esta etapa é importante porque o Cloud Manager não pode implantar o Cloud Volumes ONTAP sem acesso de saída à Internet. Se precisar limitar a conetividade de saída, consulte a lista de endpoints para link:reference_networking_cloud_manager.html#outbound-internet-access["Cloud Manager"] e link:reference_networking_aws.html#general-aws-networking-requirements-for-cloud-volumes-ontap["Cloud Volumes ONTAP"].
+
+. Configure um endpoint de VPC para o serviço S3.
++
+Um endpoint de VPC é necessário se você quiser categorizar dados inativos do Cloud Volumes ONTAP para storage de objetos de baixo custo.
+
+
+
+
+
+=== image:number2.png["Número 2"] Forneça as permissões da AWS necessárias
+
+[role="quick-margin-para"]
+Quando você implantar o Cloud Manager a partir do NetApp, você precisa usar uma conta da AWS que tenha permissões para implantar a instância.
+
+[role="quick-margin-list"]
+. Vá para o console do AWS IAM e crie uma política copiando e colando o conteúdo do https://mysupport.netapp.com/cloudontap/iampolicies["Política da NetApp Cloud Central para AWS"^].
+. Anexe a política ao usuário do IAM.
+
+
+
+
+=== image:number3.png["Número 3"] Inscreva-se no AWS Marketplace
+
+[role="quick-margin-para"]
+https://aws.amazon.com/marketplace/pp/B07QX2QLXX["Inscreva-se no Cloud Manager no AWS Marketplace"^] Para garantir que não haja interrupção do serviço após o término da avaliação gratuita do Cloud Volumes ONTAP. Você será cobrado a partir desta assinatura para cada sistema Cloud Volumes ONTAP PAYGO que você criar e cada recurso de complemento que você ativar.
+
+[role="quick-margin-para"]
+Se você estiver lançando o Cloud Volumes ONTAP trazendo sua própria licença (BYOL), https://aws.amazon.com/marketplace/search/results?x=0&y=0&searchTerms=cloud+volumes+ontap+byol["Então você precisará se inscrever nessa oferta no AWS Marketplace"^].
+
+
+
+=== image:number4.png["Número 4"] Inicie o Cloud Manager da NetApp
+
+[role="quick-margin-para"]
+O software Cloud Manager é necessário para implantar e gerenciar o Cloud Volumes ONTAP. Leva apenas alguns minutos para iniciar uma instância do Cloud Manager https://cloud.netapp.com["Cloud Central"^] do .
+
+
+
+=== image:number5.png["Número 5"] Inicie o Cloud Volumes ONTAP usando o Cloud Manager
+
+[role="quick-margin-para"]
+Quando o Cloud Manager estiver pronto, basta clicar em criar, selecionar o tipo de sistema que você gostaria de iniciar e concluir as etapas no assistente. Após 25 minutos, seu primeiro sistema Cloud Volumes ONTAP deve estar funcionando.
+
+Assista ao vídeo a seguir para um passeio por estes passos:
+
+video::video_getting_started_aws.mp4[width=848,height=480]
+.Links relacionados
+* link:concept_evaluating.html["A avaliar"]
+* link:reference_networking_cloud_manager.html["Requisitos de rede para o Cloud Manager"]
+* link:reference_networking_aws.html["Requisitos de rede para o Cloud Volumes ONTAP na AWS"]
+* link:reference_security_groups.html["Regras do grupo de segurança para a AWS"]
+* link:task_adding_aws_accounts.html["Adicionando contas da AWS ao Cloud Manager"]
+* link:reference_permissions.html#what-cloud-manager-does-with-aws-permissions["O que o Cloud Manager faz com as permissões da AWS"]
+* link:task_deploying_otc_aws.html["Iniciando o Cloud Volumes ONTAP na AWS"]
+* link:task_launching_aws_mktp.html["Lançamento do Cloud Manager no AWS Marketplace"]
+

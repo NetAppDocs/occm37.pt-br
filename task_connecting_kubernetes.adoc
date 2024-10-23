@@ -1,0 +1,104 @@
+---
+pagenav: false 
+sidebar: sidebar 
+permalink: task_connecting_kubernetes.html 
+keywords: kubernetes, persistent volumes, containers, persistent storage, kubeconfig, trident, kubernetes cluster, storage classes, classes, cvo-single, cvo-ha, thick provisioning, trident_trident, connect, disconnect, provision 
+summary: O Cloud Manager pode automatizar a implantação do NetApp Trident nos clusters do Kubernetes. Assim, você pode usar o ONTAP como storage persistente para contêineres. Isso funciona com clusters do Cloud Volumes ONTAP e do ONTAP no local. A introdução inclui alguns passos. 
+---
+= Usando o ONTAP como storage persistente para Kubernetes
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O Cloud Manager pode automatizar a implantação de https://netapp-trident.readthedocs.io/en/stable-v18.10/introduction.html["NetApp Trident"^] clusters do Kubernetes para que você possa usar o ONTAP como storage persistente para contêineres. Isso funciona com clusters do Cloud Volumes ONTAP e do ONTAP no local.
+
+Antes de concluir essas etapas, você precisa fazer isso de link:reference_before.html["Crie um sistema Cloud Volumes ONTAP"] ou link:task_discovering_ontap.html["Descubra um cluster ONTAP no local"] para o Cloud Manager.
+
+Se você implantar clusters do Kubernetes usando o, o https://cloud.netapp.com/kubernetes-service["Serviço de Kubernetes do NetApp"^] Cloud Manager poderá descobrir automaticamente os clusters da sua conta do NetApp Cloud Central. Se for esse o caso, ignore os dois primeiros passos e comece com o passo 3.
+
+
+
+=== image:number1.png["Número 1"] Verifique a conetividade de rede
+
+[role="quick-margin-list"]
+. Uma conexão de rede deve estar disponível entre o Cloud Manager e os clusters do Kubernetes, e dos clusters do Kubernetes para os sistemas ONTAP.
+. O Cloud Manager precisa de uma conexão de saída à Internet para acessar os seguintes endpoints ao instalar o Trident:
++
+\https://packages.cloud.google.com/yum https://github.com/NetApp/Trident/Releases/download/
+
++
+O Cloud Manager instala o Trident em um cluster do Kubernetes quando você conecta um ambiente de trabalho ao cluster.
+
+
+
+
+
+=== image:number2.png["Número 2"] Faça o upload de arquivos de configuração do Kubernetes para o Cloud Manager
+
+[role="quick-margin-para"]
+Para cada cluster do Kubernetes, o administrador da conta precisa fazer o upload de um arquivo de configuração (kubeconfig) que esteja no formato YAML. Depois de fazer o upload do arquivo, o Cloud Manager verifica a conetividade ao cluster e salva uma cópia criptografada do arquivo kubeconfig.
+
+[role="quick-margin-para"]
+Clique em *Kubernetes clusters > descobrir > carregar ficheiro* e selecione o ficheiro kubeconfig.
+
+[role="quick-margin-para"]
+image:screenshot_kubernetes_setup.gif["Uma captura de tela que mostra a guia clusters do Kubernetes com um botão descobrir e, em seguida, a tela onde você clica em carregar arquivo para carregar o arquivo kubeconfig."]
+
+
+
+=== image:number3.png["Número 3"] Conecte seus ambientes de trabalho aos clusters do Kubernetes
+
+[role="quick-margin-para"]
+No ambiente de trabalho, clique no ícone do Kubernetes e siga as instruções. É possível conectar clusters diferentes a diferentes sistemas ONTAP e a vários clusters ao mesmo sistema ONTAP.
+
+[role="quick-margin-para"]
+Você tem a opção de definir a classe de armazenamento do NetApp como a classe de armazenamento padrão para o cluster do Kubernetes. Quando um usuário cria um volume persistente, o cluster do Kubernetes pode usar sistemas ONTAP conectados como storage de back-end por padrão.
+
+[role="quick-margin-para"]
+image:screenshot_kubernetes_connect.gif["Uma captura de tela que mostra o ícone do Kubernetes dentro do ambiente de trabalho do Cloud Volumes ONTAP e a página subsequente que permite selecionar um cluster do Kubernetes e, em seguida, clicar em conetar."]
+
+
+
+=== image:number4.png["Número 4"] Inicie o provisionamento de volumes persistentes
+
+[role="quick-margin-para"]
+Solicite e gerencie volumes persistentes usando interfaces e construções nativas do Kubernetes. O Cloud Manager cria quatro classes de storage do Kubernetes que você pode usar ao provisionar volumes persistentes:
+
+[role="quick-margin-list"]
+* *NetApp-file*: Para vincular volumes persistentes a sistemas ONTAP de nó único
+* *NetApp-file-san*: Para vincular volumes persistentes iSCSI a sistemas ONTAP de nó único
+* *NetApp-file-redundante*: Para vincular volumes persistentes a pares de HA do ONTAP
+* *NetApp-file-redundante-san*: Para vincular volumes persistentes iSCSI a pares de HA do ONTAP
+
+
+[role="quick-margin-para"]
+O Cloud Manager configura o Trident para usar as seguintes opções de provisionamento por padrão:
+
+[role="quick-margin-list"]
+* Volumes finos
+* A política Snapshot padrão
+* Diretório Snapshot acessível
+
+
+[role="quick-margin-para"]
+https://netapp-trident.readthedocs.io/["Saiba mais sobre como provisionar seu primeiro volume com o Trident para Kubernetes"^]
+
+.Quais são os volumes Trident_Trident?
+****
+O Cloud Manager cria um volume no primeiro sistema ONTAP que você se conecta a um cluster do Kubernetes. O nome do volume é anexado com "_Trident_Trident." O ONTAP usa esse volume para se conectar ao cluster do Kubernetes. Você não deve excluir esses volumes.
+
+****
+.O que acontece quando você desconetar ou remover um cluster do Kubernetes?
+****
+O Cloud Manager permite desconetar sistemas ONTAP individuais de um cluster Kubernetes. Quando você desconeta um sistema, não pode mais usar esse sistema ONTAP como storage persistente para contêineres. Os volumes persistentes existentes não são excluídos.
+
+Depois de desconetar todos os sistemas de um cluster do Kubernetes, também é possível remover toda a configuração do Kubernetes do Cloud Manager. O Cloud Manager não desinstale o Trident quando você remove o cluster e não exclui nenhum volume persistente.
+
+Ambas as ações estão disponíveis apenas por meio de APIs. Planejamos adicionar as ações à interface em uma versão futura. link:api.html#_kubernetes["Clique aqui para obter detalhes sobre as APIs"].
+
+****

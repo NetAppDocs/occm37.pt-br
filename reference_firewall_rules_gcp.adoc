@@ -1,0 +1,340 @@
+---
+sidebar: sidebar 
+permalink: reference_firewall_rules_gcp.html 
+keywords: firewall rules, gcp, ports, google, tcp, udp, snapmirror 
+summary: O Cloud Manager cria regras de firewall do GCP que incluem as regras de entrada e saída que o Cloud Manager e o Cloud Volumes ONTAP precisam para operar com sucesso. Você pode querer consultar as portas para fins de teste ou se preferir que o use seus próprios grupos de segurança. 
+translate: false 
+---
+= Regras de firewall para o GCP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O Cloud Manager cria regras de firewall do GCP que incluem as regras de entrada e saída que o Cloud Manager e o Cloud Volumes ONTAP precisam para operar com sucesso. Você pode querer consultar as portas para fins de teste ou se preferir que o use seus próprios grupos de segurança.
+
+
+
+== Regras para o Cloud Manager
+
+As regras de firewall do Cloud Manager exigem regras de entrada e saída.
+
+
+
+=== Regras de entrada para o Cloud Manager
+
+A origem das regras de entrada nas regras de firewall predefinidas é 0,0.0,0/0.
+
+[cols="10,10,80"]
+|===
+| Protocolo | Porta | Finalidade 
+
+
+| SSH | 22 | Fornece acesso SSH ao host do Cloud Manager 
+
+
+| HTTP | 80 | Fornece acesso HTTP a partir de navegadores da Web cliente para o console da Web do Cloud Manager 
+
+
+| HTTPS | 443 | Fornece acesso HTTPS a partir de navegadores da Web cliente para o console da Web do Cloud Manager 
+|===
+
+
+=== Regras de saída para o Cloud Manager
+
+As regras de firewall predefinidas para o Cloud Manager abrem todo o tráfego de saída. Se isso for aceitável, siga as regras básicas de saída. Se você precisar de regras mais rígidas, use as regras de saída avançadas.
+
+
+
+==== Regras básicas de saída
+
+As regras de firewall predefinidas para o Cloud Manager incluem as seguintes regras de saída.
+
+[cols="20,20,60"]
+|===
+| Protocolo | Porta | Finalidade 
+
+
+| Todo o TCP | Tudo | Todo o tráfego de saída 
+
+
+| Todos os UDP | Tudo | Todo o tráfego de saída 
+|===
+
+
+==== Regras de saída avançadas
+
+Se você precisar de regras rígidas para o tráfego de saída, use as informações a seguir para abrir apenas as portas necessárias para a comunicação de saída pelo Cloud Manager.
+
+
+NOTE: O endereço IP de origem é o host do Cloud Manager.
+
+[cols="5*"]
+|===
+| Serviço | Protocolo | Porta | Destino | Finalidade 
+
+
+.9+| Ative Directory | TCP | 88 | Floresta do ative Directory | Autenticação Kerberos V. 
+
+
+| TCP | 139 | Floresta do ative Directory | Sessão de serviço NetBIOS 
+
+
+| TCP | 389 | Floresta do ative Directory | LDAP 
+
+
+| TCP | 445 | Floresta do ative Directory | Microsoft SMB/CIFS sobre TCP com enquadramento NetBIOS 
+
+
+| TCP | 464 | Floresta do ative Directory | Kerberos V alterar e definir senha (SET_CHANGE) 
+
+
+| TCP | 749 | Floresta do ative Directory | Palavra-passe de alteração e definição Kerberos V do ative Directory (RPCSEC_GSS) 
+
+
+| UDP | 137 | Floresta do ative Directory | Serviço de nomes NetBIOS 
+
+
+| UDP | 138 | Floresta do ative Directory | Serviço de datagrama NetBIOS 
+
+
+| UDP | 464 | Floresta do ative Directory | Administração de chaves Kerberos 
+
+
+| Chamadas de API e AutoSupport | HTTPS | 443 | LIF de gerenciamento de cluster de ONTAP e Internet de saída | Chamadas de API para GCP e ONTAP e envio de mensagens AutoSupport para o NetApp 
+
+
+| Chamadas de API | TCP | 3000 | LIF de gerenciamento de clusters ONTAP | Chamadas de API para ONTAP 
+
+
+| DNS | UDP | 53 | DNS | Usado para resolução de DNS pelo Cloud Manager 
+|===
+
+
+== Regras para Cloud Volumes ONTAP
+
+O grupo de segurança do Cloud Volumes ONTAP requer regras de entrada e saída.
+
+
+
+=== Regras de entrada para Cloud Volumes ONTAP
+
+A origem das regras de entrada no grupo de segurança predefinido é 0,0.0,0/0.
+
+[cols="10,10,80"]
+|===
+| Protocolo | Porta | Finalidade 
+
+
+| Todo o ICMP | Tudo | Fazer ping na instância 
+
+
+| HTTP | 80 | Acesso HTTP ao console da Web do System Manager usando o endereço IP do LIF de gerenciamento de cluster 
+
+
+| HTTPS | 443 | Acesso HTTPS ao console da Web do System Manager usando o endereço IP do LIF de gerenciamento de cluster 
+
+
+| SSH | 22 | Acesso SSH ao endereço IP do LIF de gerenciamento de cluster ou um LIF de gerenciamento de nó 
+
+
+| TCP | 111 | Chamada de procedimento remoto para NFS 
+
+
+| TCP | 139 | Sessão de serviço NetBIOS para CIFS 
+
+
+| TCP | 161-162 | Protocolo de gerenciamento de rede simples 
+
+
+| TCP | 445 | Microsoft SMB/CIFS sobre TCP com enquadramento NetBIOS 
+
+
+| TCP | 635 | Montagem em NFS 
+
+
+| TCP | 749 | Kerberos 
+
+
+| TCP | 2049 | Daemon do servidor NFS 
+
+
+| TCP | 3260 | Acesso iSCSI através do iSCSI data LIF 
+
+
+| TCP | 4045 | Daemon de bloqueio NFS 
+
+
+| TCP | 4046 | Monitor de status da rede para NFS 
+
+
+| TCP | 10000 | Backup usando NDMP 
+
+
+| TCP | 11104 | Gestão de sessões de comunicação entre clusters para SnapMirror 
+
+
+| TCP | 11105 | Transferência de dados SnapMirror usando LIFs entre clusters 
+
+
+| UDP | 111 | Chamada de procedimento remoto para NFS 
+
+
+| UDP | 161-162 | Protocolo de gerenciamento de rede simples 
+
+
+| UDP | 635 | Montagem em NFS 
+
+
+| UDP | 2049 | Daemon do servidor NFS 
+
+
+| UDP | 4045 | Daemon de bloqueio NFS 
+
+
+| UDP | 4046 | Monitor de status da rede para NFS 
+
+
+| UDP | 4049 | Protocolo rquotad NFS 
+|===
+
+
+=== Regras de saída para Cloud Volumes ONTAP
+
+O grupo de segurança predefinido para o Cloud Volumes ONTAP abre todo o tráfego de saída. Se isso for aceitável, siga as regras básicas de saída. Se você precisar de regras mais rígidas, use as regras de saída avançadas.
+
+
+
+==== Regras básicas de saída
+
+O grupo de segurança predefinido para o Cloud Volumes ONTAP inclui as seguintes regras de saída.
+
+[cols="20,20,60"]
+|===
+| Protocolo | Porta | Finalidade 
+
+
+| Todo o ICMP | Tudo | Todo o tráfego de saída 
+
+
+| Todo o TCP | Tudo | Todo o tráfego de saída 
+
+
+| Todos os UDP | Tudo | Todo o tráfego de saída 
+|===
+
+
+==== Regras de saída avançadas
+
+Se você precisar de regras rígidas para o tráfego de saída, você pode usar as seguintes informações para abrir apenas as portas necessárias para a comunicação de saída pelo Cloud Volumes ONTAP.
+
+
+NOTE: A origem é a interface (endereço IP) no sistema Cloud Volumes ONTAP.
+
+[cols="10,10,10,20,20,40"]
+|===
+| Serviço | Protocolo | Porta | Fonte | Destino | Finalidade 
+
+
+.18+| Ative Directory | TCP | 88 | LIF de gerenciamento de nós | Floresta do ative Directory | Autenticação Kerberos V. 
+
+
+| UDP | 137 | LIF de gerenciamento de nós | Floresta do ative Directory | Serviço de nomes NetBIOS 
+
+
+| UDP | 138 | LIF de gerenciamento de nós | Floresta do ative Directory | Serviço de datagrama NetBIOS 
+
+
+| TCP | 139 | LIF de gerenciamento de nós | Floresta do ative Directory | Sessão de serviço NetBIOS 
+
+
+| TCP | 389 | LIF de gerenciamento de nós | Floresta do ative Directory | LDAP 
+
+
+| TCP | 445 | LIF de gerenciamento de nós | Floresta do ative Directory | Microsoft SMB/CIFS sobre TCP com enquadramento NetBIOS 
+
+
+| TCP | 464 | LIF de gerenciamento de nós | Floresta do ative Directory | Kerberos V alterar e definir senha (SET_CHANGE) 
+
+
+| UDP | 464 | LIF de gerenciamento de nós | Floresta do ative Directory | Administração de chaves Kerberos 
+
+
+| TCP | 749 | LIF de gerenciamento de nós | Floresta do ative Directory | Kerberos V alterar e definir senha (RPCSEC_GSS) 
+
+
+| TCP | 88 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Autenticação Kerberos V. 
+
+
+| UDP | 137 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Serviço de nomes NetBIOS 
+
+
+| UDP | 138 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Serviço de datagrama NetBIOS 
+
+
+| TCP | 139 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Sessão de serviço NetBIOS 
+
+
+| TCP | 389 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | LDAP 
+
+
+| TCP | 445 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Microsoft SMB/CIFS sobre TCP com enquadramento NetBIOS 
+
+
+| TCP | 464 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Kerberos V alterar e definir senha (SET_CHANGE) 
+
+
+| UDP | 464 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Administração de chaves Kerberos 
+
+
+| TCP | 749 | DATA LIF (NFS, CIFS) | Floresta do ative Directory | Palavra-passe de alteração e definição Kerberos V (RPCSEC_GSS) 
+
+
+.3+| Cluster | Todo o tráfego | Todo o tráfego | Todos os LIFs em um nó | Todos os LIFs no outro nó | Comunicações entre clusters (apenas Cloud Volumes ONTAP HA) 
+
+
+| TCP | 3000 | LIF de gerenciamento de nós | Ha mediador | Chamadas ZAPI (somente Cloud Volumes ONTAP HA) 
+
+
+| ICMP | 1 | LIF de gerenciamento de nós | Ha mediador | Manter vivo (apenas Cloud Volumes ONTAP HA) 
+
+
+| DHCP | UDP | 68 | LIF de gerenciamento de nós | DHCP | Cliente DHCP para configuração pela primeira vez 
+
+
+| DHCPS | UDP | 67 | LIF de gerenciamento de nós | DHCP | Servidor DHCP 
+
+
+| DNS | UDP | 53 | LIF e LIF de dados de gerenciamento de nós (NFS, CIFS) | DNS | DNS 
+
+
+| NDMP | TCP | 18600–18699 | LIF de gerenciamento de nós | Servidores de destino | Cópia NDMP 
+
+
+| SMTP | TCP | 25 | LIF de gerenciamento de nós | Servidor de correio | Alertas SMTP, podem ser usados para AutoSupport 
+
+
+.4+| SNMP | TCP | 161 | LIF de gerenciamento de nós | Monitorar o servidor | Monitoramento por traps SNMP 
+
+
+| UDP | 161 | LIF de gerenciamento de nós | Monitorar o servidor | Monitoramento por traps SNMP 
+
+
+| TCP | 162 | LIF de gerenciamento de nós | Monitorar o servidor | Monitoramento por traps SNMP 
+
+
+| UDP | 162 | LIF de gerenciamento de nós | Monitorar o servidor | Monitoramento por traps SNMP 
+
+
+.2+| SnapMirror | TCP | 11104 | LIF entre clusters | LIFs ONTAP entre clusters | Gestão de sessões de comunicação entre clusters para SnapMirror 
+
+
+| TCP | 11105 | LIF entre clusters | LIFs ONTAP entre clusters | Transferência de dados SnapMirror 
+
+
+| Syslog | UDP | 514 | LIF de gerenciamento de nós | Servidor syslog | Mensagens de encaminhamento do syslog 
+|===

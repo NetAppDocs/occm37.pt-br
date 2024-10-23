@@ -1,0 +1,95 @@
+---
+sidebar: sidebar 
+permalink: task_generating_compliance_reports.html 
+keywords: report, privacy, risk, privacy risk assessment, compliance status, severity, compliance, privacy risk, data subjects, privacy 
+summary: O Relatório de avaliação de risco de privacidade fornece uma visão geral do status de risco de privacidade da sua organização. Gere o relatório e envie-o para outros grupos da sua organização, incluindo executivos, equipes de conformidade e equipes jurídicas. 
+---
+= Visualizar o Relatório de avaliação de risco de privacidade
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O Relatório de avaliação de risco de privacidade fornece uma visão geral do status de risco à privacidade da sua organização, conforme exigido pelas regulamentações de privacidade, como GDPR e CCPA.
+
+
+NOTE: A NetApp não pode garantir 100% de precisão dos dados pessoais e dados pessoais confidenciais que o Cloud Compliance identifica. Deve sempre validar as informações através da revisão dos dados.
+
+O relatório inclui as seguintes informações:
+
+Status de conformidade:: Uma pontuação de gravidade (veja abaixo para mais detalhes) e a distribuição de dados, sejam eles não sensíveis, pessoais ou confidenciais.
+Visão geral da avaliação:: Uma discriminação dos tipos de dados pessoais encontrados, bem como das categorias de dados.
+Sujeitos de dados nesta avaliação:: O número de pessoas por localização para as quais foram encontrados identificadores nacionais.
+
+
+
+
+== Gerando o Relatório de avaliação de risco de Privacidade
+
+Vá para a guia conformidade para gerar o relatório.
+
+.Passos
+. Na parte superior do Cloud Manager, clique em *Compliance*.
+. Em *relatórios*, clique no ícone de download ao lado de *avaliação de risco de privacidade*.
++
+image:screenshot_privacy_risk_assessment.gif["Uma captura de tela da guia conformidade no Cloud Manager que mostra o painel relatórios onde você pode clicar em avaliação de risco de privacidade."]
+
+
+
+.Resultado
+O Cloud Compliance gera um relatório em PDF que você pode revisar e enviar para outros grupos conforme necessário.
+
+
+
+== Pontuação de gravidade
+
+O Cloud Compliance calcula a pontuação de gravidade para o Relatório de avaliação de risco de privacidade com base em três variáveis:
+
+* A percentagem de dados pessoais de todos os dados.
+* A percentagem de dados pessoais sensíveis de todos os dados.
+* O percentual de arquivos que incluem titulares de dados, determinado por identificadores nacionais, como IDs nacionais, números de Segurança Social e números de identificação fiscal.
+
+
+A lógica utilizada para determinar a pontuação é a seguinte:
+
+[cols="29,71"]
+|===
+| Pontuação de gravidade | Lógica 
+
+
+| 0 | Todas as três variáveis são exatamente 0% 
+
+
+| 1 | Uma das variáveis é maior que 0% 
+
+
+| 2 | Uma das variáveis é maior que 3% 
+
+
+| 3 | Duas das variáveis são maiores que 3% 
+
+
+| 4 | Três das variáveis são maiores que 3% 
+
+
+| 5 | Uma das variáveis é maior 6% 
+
+
+| 6 | Duas das variáveis são maiores 6% 
+
+
+| 7 | Três das variáveis são maiores 6% 
+
+
+| 8 | Uma das variáveis é maior 15% 
+
+
+| 9 | Duas das variáveis são maiores 15% 
+
+
+| 10 | Três das variáveis são maiores 15% 
+|===

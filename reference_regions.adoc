@@ -1,0 +1,19 @@
+---
+sidebar: sidebar 
+permalink: reference_regions.html 
+keywords: region, regions, mumbai, seoul, singapore, sydney, tokyo, frankfurt, paris, london, ireland, canada, govcloud, us east, us west, sao paulo, australia, japan, korea, southeast asia, east asia, germany, north europe, uk south, uk west, west europe, canada, central us, east us, north central, south central, west us, west central 
+summary: O Cloud Manager e o Cloud Volumes ONTAP são compatíveis em várias regiões da AWS e regiões do Microsoft Azure. 
+---
+= Regiões suportadas
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O Cloud Manager e o Cloud Volumes ONTAP são compatíveis em várias regiões da AWS e regiões do Microsoft Azure.
+
+https://cloud.netapp.com/cloud-volumes-global-regions["Clique aqui para ver a lista de regiões suportadas"^].

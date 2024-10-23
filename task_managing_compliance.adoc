@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: task_managing_compliance.html 
+keywords: remove, delete, stop, stop scans, stop scanning, cloud compliance, stop cloud compliance, delete cloud compliance, terminate, deactivate, deactivating cloud compliance 
+summary: Se necessário, você pode impedir que o Cloud Compliance escaneie um ou mais ambientes de trabalho. Você também pode excluir a instância do Cloud Compliance se não quiser mais usar o Cloud Compliance com seus sistemas Cloud Volumes ONTAP. 
+---
+= Desativação do Cloud Compliance
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Se necessário, você pode impedir que o Cloud Compliance escaneie um ou mais ambientes de trabalho. Você também pode excluir a instância do Cloud Compliance se não quiser mais usar o Cloud Compliance com seus sistemas Cloud Volumes ONTAP.
+
+
+
+== A desativação da conformidade verifica se há um ambiente de trabalho
+
+Quando você desativa as varreduras, o Cloud Compliance não verifica mais os dados no sistema e remove os insights de conformidade indexados da instância do Cloud Compliance (os dados do próprio ambiente de trabalho não são excluídos).
+
+.Passos
+. Na parte superior do Cloud Manager, clique em *ambientes de trabalho*.
+. Selecione o ambiente de trabalho.
+. No painel direito, clique no ícone de ação do serviço Cloud Compliance e selecione *Desativar digitalização*.
++
+image:screenshot_deactivate_compliance_scan.png["Uma captura de ecrã do ícone de ação onde pode selecionar Desativar digitalização. Esta opção está disponível depois de selecionar um ambiente de trabalho na página ambientes de trabalho."]
+
+
+
+
+
+== Excluindo a instância do Cloud Compliance
+
+Você pode excluir a instância do Cloud Compliance se não quiser mais usar o Cloud Compliance com Cloud Volumes ONTAP. A exclusão da instância também exclui os discos associados onde os dados indexados residem.
+
+.Passo
+. Vá para o console do seu provedor de nuvem e exclua a instância do Cloud Compliance.
++
+A instância é chamada _CloudCompliance_ com um hash gerado (UUID) concatenado a ela. Por exemplo: _CloudCompliance-16bb6564-38ad-4080-9a92-36f5fd2f71c7_
+
+

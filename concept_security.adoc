@@ -1,0 +1,100 @@
+---
+sidebar: sidebar 
+permalink: concept_security.html 
+keywords: security, encryption, antivirus, concepts, key managers, safenet, kms, keys, vscan, encrypt, aws, key management service, cmk, customer master key, data at rest, data-at-rest, netapp storage encryption, certificate signing request, csr, certificate, ca certificate, virus, scan, virus scan, certificate authority, netapp volume encryption, nve, volume encryption, key management server, ransomware, fpolicy, snapshots 
+summary: O Cloud Volumes ONTAP é compatível com a criptografia de dados e oferece proteção contra vírus e ransomware. 
+---
+= Segurança
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O Cloud Volumes ONTAP é compatível com a criptografia de dados e oferece proteção contra vírus e ransomware.
+
+
+
+== Criptografia de dados em repouso
+
+O Cloud Volumes ONTAP oferece suporte às seguintes tecnologias de criptografia:
+
+* Criptografia de volume NetApp (a partir do Cloud Volumes ONTAP 9,5)
+* AWS Key Management Service
+* Criptografia do Serviço de storage do Azure
+* Criptografia padrão do Google Cloud Platform
+
+
+Você pode usar o NetApp volume Encryption com a criptografia nativa da AWS, Azure ou GCP, que criptografa dados no nível do hipervisor.
+
+
+
+=== Criptografia de volume do NetApp
+
+O NetApp volume Encryption (NVE) é uma tecnologia baseada em software para criptografar dados em repouso, um volume de cada vez. Os dados, as cópias Snapshot e os metadados são criptografados. O acesso aos dados é dado por uma chave exclusiva XTS-AES-256, uma por volume.
+
+O Cloud Volumes ONTAP oferece suporte à criptografia de volume NetApp com um servidor de gerenciamento de chaves externo. Um Gerenciador de chaves integrado não é suportado. Você pode encontrar os principais gerentes suportados na http://mysupport.netapp.com/matrix["Ferramenta de Matriz de interoperabilidade do NetApp"^] solução *Key Managers*.
+
+Você pode ativar a criptografia de volume do NetApp em um volume novo ou existente usando a CLI ou o Gerenciador de sistema. O Cloud Manager não é compatível com criptografia de volume NetApp. Para obter instruções, link:task_encrypting_volumes.html["Criptografia de volumes com o NetApp volume Encryption"]consulte .
+
+
+
+=== AWS Key Management Service
+
+Ao iniciar um sistema Cloud Volumes ONTAP na AWS, é possível ativar a criptografia de dados usando o http://docs.aws.amazon.com/kms/latest/developerguide/overview.html["AWS Key Management Service (KMS)"^]. O Cloud Manager solicita chaves de dados usando uma chave mestra do cliente (CMK).
+
+
+TIP: Não é possível alterar o método de criptografia de dados da AWS depois de criar um sistema Cloud Volumes ONTAP.
+
+Se você quiser usar essa opção de criptografia, certifique-se de que o AWS KMS esteja configurado adequadamente. Para obter detalhes, link:task_setting_up_kms.html["Configurando o AWS KMS"]consulte .
+
+
+
+=== Criptografia do Serviço de storage do Azure
+
+https://azure.microsoft.com/en-us/documentation/articles/storage-service-encryption/["Criptografia do Serviço de storage do Azure"^] Para dados em repouso é habilitado por padrão para dados do Cloud Volumes ONTAP no Azure. Nenhuma configuração é necessária.
+
+
+NOTE: As chaves gerenciadas pelo cliente não são compatíveis com o Cloud Volumes ONTAP.
+
+
+
+=== Criptografia padrão do Google Cloud Platform
+
+https://cloud.google.com/security/encryption-at-rest/["Criptografia de dados em repouso do Google Cloud Platform"^] É ativado por padrão para o Cloud Volumes ONTAP. Nenhuma configuração é necessária.
+
+Embora o Google Cloud Storage sempre criptografe seus dados antes de serem gravados no disco, você pode usar as APIs do Cloud Manager para criar um sistema Cloud Volumes ONTAP que use _chaves de criptografia gerenciadas pelo cliente_. Essas são as chaves que você gera e gerencia no GCP usando o Cloud Key Management Service.
+
+Consulte link:api.html#_creating_systems_in_gcp["Guia do desenvolvedor de API"^]a para obter detalhes sobre como utilizar os parâmetros "GcpEncryption".
+
+
+
+== Verificação de vírus ONTAP
+
+Você pode usar a funcionalidade de antivírus integrada em sistemas ONTAP para proteger os dados contra o comprometimento por vírus ou outros códigos maliciosos.
+
+A verificação de vírus do ONTAP, chamada _Vscan_, combina o melhor software antivírus de terceiros com recursos do ONTAP que oferecem a flexibilidade necessária para controlar quais arquivos são verificados e quando.
+
+Para obter informações sobre fornecedores, software e versões compatíveis com o Vscan, consulte http://mysupport.netapp.com/matrix["Matriz de interoperabilidade do NetApp"^].
+
+Para obter informações sobre como configurar e gerenciar a funcionalidade antivírus em sistemas ONTAP, consulte http://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-acg/home.html["Guia de configuração do antivírus do ONTAP 9"^].
+
+
+
+== Proteção contra ransomware
+
+Os ataques de ransomware podem custar tempo, recursos e reputação aos negócios. Com o Cloud Manager, você implementa a solução NetApp para ransomware, que fornece ferramentas eficazes de visibilidade, detecção e correção.
+
+* O Cloud Manager identifica volumes que não estão protegidos por uma política do Snapshot e permite ativar a política padrão do Snapshot nesses volumes.
++
+As cópias snapshot são somente leitura, o que impede a corrupção de ransomware. Eles também podem fornecer a granularidade para criar imagens de uma única cópia de arquivo ou uma solução completa de recuperação de desastres.
+
+* O Cloud Manager também permite bloquear extensões comuns de arquivos de ransomware habilitando a solução FPolicy da ONTAP.
+
+
+image:screenshot_ransomware_protection.gif["Uma captura de tela que mostra a página de proteção contra ransomware que está disponível em um ambiente de trabalho. A tela mostra o número de volumes sem uma Política Snapshot e a capacidade de bloquear extensões de arquivos de ransomware."]
+
+link:task_protecting_ransomware.html["Saiba como implementar a solução NetApp para ransomware"].

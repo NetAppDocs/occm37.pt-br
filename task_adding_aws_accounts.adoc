@@ -1,0 +1,115 @@
+---
+sidebar: sidebar 
+permalink: task_adding_aws_accounts.html 
+keywords: permissions, aws, policy, iam, iam role, role, granting, policy, iam policy, iam user, access keys, arn, cloud provider accounts, aws, cloud provider profile, json, iam 
+summary: Se você quiser implantar o Cloud Volumes ONTAP em diferentes contas da AWS, precisará fornecer as permissões necessárias para essas contas e adicionar os detalhes ao Cloud Manager. A forma como você fornece as permissões depende se deseja fornecer ao Cloud Manager chaves AWS ou o ARN de uma função em uma conta confiável. 
+---
+= Configuração e adição de contas da AWS ao Cloud Manager
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Se você quiser implantar o Cloud Volumes ONTAP em diferentes contas da AWS, precisará fornecer as permissões necessárias e adicionar os detalhes ao Cloud Manager. A forma como você fornece as permissões depende se deseja fornecer ao Cloud Manager chaves AWS ou o ARN de uma função em uma conta confiável.
+
+
+NOTE: Ao implantar o Cloud Manager a partir do Cloud Central, o Cloud Manager adiciona automaticamente a conta da AWS na qual você implantou o Cloud Manager. Uma conta inicial não será adicionada se você tiver instalado manualmente o software Cloud Manager em um sistema existente. link:concept_accounts_aws.html["Saiba mais sobre as contas e permissões da AWS"].
+
+*Escolhas*
+
+* <<Concessão de permissões fornecendo chaves da AWS>>
+* <<Concessão de permissões assumindo funções do IAM em outras contas>>
+
+
+
+
+== Concessão de permissões fornecendo chaves da AWS
+
+Se você quiser fornecer ao Cloud Manager chaves da AWS para um usuário do IAM, precisará conceder as permissões necessárias a esse usuário. A política do IAM do Cloud Manager define as ações e recursos da AWS que o Cloud Manager pode usar.
+
+.Passos
+. Faça download da política do IAM do Cloud Manager no https://mysupport.netapp.com/cloudontap/iampolicies["Página de políticas do Cloud Manager"^].
+. No console do IAM, crie sua própria política copiando e colando o texto da política do IAM do Cloud Manager.
++
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html["Documentação da AWS: Criando políticas do IAM"^]
+
+. Anexe a política a uma função do IAM ou a um usuário do IAM.
++
+** https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create.html["Documentação da AWS: Criando funções do IAM"^]
+** https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage-attach-detach.html["Documentação da AWS: Adicionando e removendo políticas do IAM"^]
+
+
+
+
+.Resultado
+A conta agora tem as permissões necessárias. <<Adicionando contas da AWS ao Cloud Manager,Agora você pode adicioná-lo ao Cloud Manager>>.
+
+
+
+== Concessão de permissões assumindo funções do IAM em outras contas
+
+Você pode configurar um relacionamento de confiança entre a conta da AWS de origem na qual implantou a instância do Cloud Manager e outras contas da AWS usando funções do IAM. Em seguida, você fornecerá ao Cloud Manager o ARN das funções do IAM das contas confiáveis.
+
+.Passos
+. Vá para a conta de destino onde você deseja implantar o Cloud Volumes ONTAP e criar uma função do IAM selecionando *outra conta da AWS*.
++
+Certifique-se de fazer o seguinte:
+
++
+** Insira o ID da conta onde reside a instância do Cloud Manager.
+** Anexe a política do IAM do Cloud Manager, que está disponível no https://mysupport.netapp.com/cloudontap/iampolicies["Página de políticas do Cloud Manager"^].
++
+image:screenshot_iam_create_role.gif["Uma captura de tela que mostra a página criar função no Console do AWS IAM. Em Selecionar tipo de entidade confiável, outra conta da AWS é selecionada."]
+
+
+
+. Vá para a conta de origem onde reside a instância do Cloud Manager e selecione a função do IAM anexada à instância.
++
+.. Clique em *Relações de confiança > Editar relação de confiança*.
+.. Adicione a ação "sts:AssumeRole" e o ARN da função que você criou na conta de destino.
++
+*Exemplo*
+
++
+[source, json]
+----
+{
+ "Version": "2012-10-17",
+ "Statement": {
+   "Effect": "Allow",
+   "Action": "sts:AssumeRole",
+   "Resource": "arn:aws:iam::ACCOUNT-B-ID:role/ACCOUNT-B-ROLENAME"
+}
+}
+----
+
+
+
+
+.Resultado
+A conta agora tem as permissões necessárias. <<Adicionando contas da AWS ao Cloud Manager,Agora você pode adicioná-lo ao Cloud Manager>>.
+
+
+
+== Adicionando contas da AWS ao Cloud Manager
+
+Depois de fornecer uma conta da AWS com as permissões necessárias, você pode adicionar a conta ao Cloud Manager. Isso permite que você inicie sistemas Cloud Volumes ONTAP nessa conta.
+
+.Passos
+. No canto superior direito do console do Cloud Manager, clique no ícone Configurações e selecione *Contas de suporte e provedores de nuvem*.
++
+image:screenshot_settings_icon.gif["Uma captura de tela que mostra o ícone Configurações no canto superior direito do console do Cloud Manager."]
+
+. Clique em *Adicionar nova conta* e selecione *AWS*.
+. Escolha se você deseja fornecer chaves da AWS ou o ARN de uma função do IAM confiável.
+. Confirme se os requisitos da política foram atendidos e clique em *criar conta*.
+
+
+.Resultado
+Agora você pode alternar para outra conta na página Detalhes e credenciais ao criar um novo ambiente de trabalho:
+
+image:screenshot_accounts_switch_aws.gif["Uma captura de tela que mostra a seleção entre contas de provedor de nuvem depois de clicar em trocar conta na página Detalhes  credenciais."]

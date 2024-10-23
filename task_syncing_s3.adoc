@@ -1,0 +1,80 @@
+---
+sidebar: sidebar 
+permalink: task_syncing_s3.html 
+keywords: sync, data, s3, cloud sync, bucket, service, sync to s3, volume sync 
+summary: É possível sincronizar dados do ONTAP volumes para um bucket do Amazon S3 integrando um ambiente de trabalho ao NetApp Cloud Sync. Em seguida, você pode usar os dados sincronizados como uma cópia secundária ou para o Data Processing usando serviços da AWS, como EMR e Redshift. 
+---
+= Sincronização de dados com o Amazon S3
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+É possível sincronizar dados do ONTAP volumes para um bucket do Amazon S3 integrando um ambiente de trabalho ao https://www.netapp.com/us/cloud/data-sync-saas-product-details["NetApp Cloud Sync"^]. Em seguida, você pode usar os dados sincronizados como uma cópia secundária ou para o Data Processing usando serviços da AWS, como EMR e Redshift.
+
+
+
+== Como funciona o recurso de sincronização com o S3
+
+Você pode integrar um ambiente de trabalho ao serviço Cloud Sync a qualquer momento. Ao integrar um ambiente de trabalho, o serviço Cloud Sync sincroniza dados dos volumes selecionados para um único bucket do S3. A integração funciona com ambientes de trabalho do Cloud Volumes ONTAP e clusters do ONTAP que estejam no local ou em parte de uma configuração de storage privado (NPS) da NetApp.
+
+Para sincronizar os dados, o serviço inicia uma instância de data broker na VPC. A Cloud Sync usa um agente de dados por ambiente de trabalho para sincronizar dados de volumes com um bucket do S3. Após a sincronização inicial, o serviço sincroniza todos os dados alterados uma vez por dia à meia-noite.
+
+image:screenshot_sync_to_s3.gif["Captura de tela: Mostra uma imagem conceitual de volumes de um ambiente de trabalho sendo sincronizado com um bucket do S3 por um corretor de dados."]
+
+Se você quiser executar ações avançadas do Cloud Sync, vá diretamente para o serviço Cloud Sync. A partir daí, você pode executar ações como sincronização do S3 para um servidor NFS, escolher diferentes buckets do S3 para volumes e modificar programações.
+
+
+
+=== teste gratuito de 14 dias
+
+Se você é um novo usuário do Cloud Sync, seus primeiros 14 dias são gratuitos. Após o término da avaliação gratuita, você deve pagar por cada relacionamento _Sync_ a uma taxa horária ou comprando licenças. Cada volume que você sincronizar com um bucket do S3 é considerado uma relação de sincronização. Você pode configurar ambas as opções de pagamento diretamente do Cloud Sync na página Configurações de Licença.
+
+
+
+=== Como obter ajuda
+
+Use as seguintes opções para qualquer suporte relacionado ao recurso de sincronização do Cloud Manager com o S3 ou para o Cloud Sync em geral:
+
+* Feedback geral do produto: Ng-cloudsync-Contact em NetApp.com
+* Opções de suporte técnico:
++
+** Comunidades NetApp Cloud Sync
+** Chat no produto (canto inferior direito do Cloud Manager)
+
+
+
+
+
+
+== Integração de um ambiente de trabalho com o serviço Cloud Sync
+
+Para sincronizar volumes com o Amazon S3 diretamente do Cloud Manager, é necessário integrar o ambiente de trabalho ao serviço Cloud Sync.
+
+video::3hOtLs70_xE[youtube,width=848,height=480]
+.Passos
+. Abra um ambiente de trabalho e clique em *Sincronizar para S3*.
+. Clique em *Sync* e siga as instruções para sincronizar seus dados com o S3.
+
+
+
+NOTE: Não é possível sincronizar volumes de proteção de dados com o S3. Os volumes devem ser graváveis.
+
+
+
+== Gerenciando relações de sincronização de volume
+
+Depois de integrar um ambiente de trabalho com o serviço Cloud Sync, você pode sincronizar volumes adicionais, parar de sincronizar um volume e remover a integração com o Cloud Sync.
+
+.Passos
+. Na página ambientes de trabalho, clique duas vezes no ambiente de trabalho no qual você deseja gerenciar relacionamentos de sincronização.
+. Se quiser ativar ou desativar a sincronização com S3 para um volume, selecione o volume e clique em *Sincronizar para S3* ou *Excluir relação de sincronização*.
+. Se você quiser excluir todas as relações de sincronização de um ambiente de trabalho, clique na guia *Sincronizar para S3* e clique em *Excluir Sincronia*.
++
+Esta ação não exclui dados sincronizados do bucket do S3. Se o corretor de dados não estiver sendo usado em quaisquer outras relações de sincronização, o serviço Cloud Sync excluirá o corretor de dados.
+
+

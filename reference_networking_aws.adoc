@@ -1,0 +1,178 @@
+---
+sidebar: sidebar 
+permalink: reference_networking_aws.html 
+keywords: networking, network, requirements, connection, connections, vpc, security group, security groups, subnets, vpn, internet, nat, s3, dns, ad, active directory, az, availability zone, floating IP, floating, SVM, management LIF, route, route tables, proxy, HTTP, private, tier, s3 endpoint, tiering, storage tier, storage tiering, proxy server, nat device, vpn, snapmanager, snapcenter, iscsi, nfs, cifs, nas, san, outbound, inbound, connections, autosupport, ha, ha pair, high availability 
+summary: Configure sua rede AWS para que os sistemas Cloud Volumes ONTAP possam operar corretamente. 
+---
+= Requisitos de rede para o Cloud Volumes ONTAP na AWS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Configure sua rede AWS para que os sistemas Cloud Volumes ONTAP possam operar corretamente.
+
+
+
+== Requisitos gerais de rede da AWS para o Cloud Volumes ONTAP
+
+Os requisitos a seguir devem ser atendidos na AWS.
+
+Acesso de saída à Internet para nós Cloud Volumes ONTAP:: Os nós do Cloud Volumes ONTAP exigem acesso de saída à Internet para enviar mensagens para o NetApp AutoSupport, que monitora proativamente a integridade do storage.
++
+--
+As políticas de roteamento e firewall devem permitir o tráfego HTTP/HTTPS da AWS para os seguintes endpoints, para que o Cloud Volumes ONTAP possa enviar mensagens do AutoSupport:
+
+* https://support.NetApp.com/aods/asupmessage
+* https://support.NetApp.com/asupprod/post/1,0/postSup
++
+Se você tiver uma instância NAT, deverá definir uma regra de grupo de segurança de entrada que permita o tráfego HTTPS da sub-rede privada para a Internet.
+
+
+
+--
+Acesso de saída à Internet para o mediador HA:: A instância de mediador de HA precisa ter uma conexão de saída para o serviço AWS EC2 para que a TI possa ajudar no failover de storage. Para fornecer a conexão, você pode adicionar um endereço IP público, especificar um servidor proxy ou usar uma opção manual.
++
+--
+A opção manual pode ser um gateway NAT ou um endpoint de VPC de interface da sub-rede de destino para o serviço AWS EC2. Para obter detalhes sobre endpoints da VPC, http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpce-interface.html["Documentação da AWS: Endpoints da interface VPC (AWS PrivateLink)"^] consulte .
+
+--
+Número de endereços IP:: O Cloud Manager aloca o seguinte número de endereços IP para o Cloud Volumes ONTAP na AWS:
++
+--
+* Nó único: 6 endereços IP
+* Pares HA em AZs únicos: Endereços 15
+* Pares DE HA em vários AZs: 15 ou 16 endereços IP
++
+Observe que o Cloud Manager cria um LIF de gerenciamento de SVM em sistemas de nó único, mas não em pares de HA em uma única AZ. Você pode escolher se deseja criar um LIF de gerenciamento de SVM em pares de HA em vários AZs.
+
++
+
+TIP: Um LIF é um endereço IP associado a uma porta física. É necessário um LIF de gerenciamento de SVM para ferramentas de gerenciamento como o SnapCenter.
+
+
+
+--
+Grupos de segurança:: Você não precisa criar grupos de segurança porque o Cloud Manager faz isso por você. Se você precisar usar o seu próprio, link:reference_security_groups.html["Regras do grupo de segurança"]consulte .
+Conexão do Cloud Volumes ONTAP ao AWS S3 para categorização de dados:: Se você quiser usar o EBS como um nível de desempenho e o AWS S3 como um nível de capacidade, deve garantir que o Cloud Volumes ONTAP tenha uma conexão com o S3. A melhor maneira de fornecer essa conexão é criando um endpoint VPC para o serviço S3. Para obter instruções, https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpce-gateway.html#create-gateway-endpoint["Documentação da AWS: Criando um endpoint do Gateway"^] consulte .
++
+--
+Ao criar o endpoint VPC, certifique-se de selecionar a tabela região, VPC e rota que corresponde à instância do Cloud Volumes ONTAP. Você também deve modificar o grupo de segurança para adicionar uma regra HTTPS de saída que permita o tráfego para o endpoint S3. Caso contrário, o Cloud Volumes ONTAP não pode se conetar ao serviço S3.
+
+Se tiver algum problema, consulte https://aws.amazon.com/premiumsupport/knowledge-center/connect-s3-vpc-endpoint/["AWS Support Knowledge Center: Por que não consigo me conetar a um bucket do S3 usando um endpoint VPC de gateway?"^]
+
+--
+Conexões com sistemas ONTAP em outras redes:: Para replicar dados entre um sistema Cloud Volumes ONTAP na AWS e sistemas ONTAP em outras redes, você precisa ter uma conexão VPN entre a VPC da AWS e a outra rede, por exemplo, um VNet do Azure ou sua rede corporativa. Para obter instruções, https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/SetUpVPNConnections.html["Documentação da AWS: Configurando uma conexão VPN da AWS"^] consulte .
+DNS e ative Directory para CIFS:: Se você quiser provisionar o storage CIFS, configure o DNS e o ative Directory na AWS ou estenda sua configuração local para a AWS.
++
+--
+O servidor DNS deve fornecer serviços de resolução de nomes para o ambiente do ative Directory. Você pode configurar conjuntos de opções DHCP para usar o servidor DNS padrão EC2, que não deve ser o servidor DNS usado pelo ambiente ative Directory.
+
+Para obter instruções, https://docs.aws.amazon.com/quickstart/latest/active-directory-ds/welcome.html["Documentação da AWS: Serviços de domínio do ative Directory na nuvem AWS: Implantação de referência de início rápido"^] consulte .
+
+--
+
+
+
+
+== Requisitos de rede da AWS para o Cloud Volumes ONTAP HA em vários AZs
+
+Requisitos adicionais de rede da AWS se aplicam a configurações do Cloud Volumes ONTAP HA que usam várias zonas de disponibilidade (AZs). Você deve analisar esses requisitos antes de iniciar um par de HA, pois deve inserir os detalhes da rede no Cloud Manager.
+
+Para entender como os pares de HA funcionam, link:concept_ha.html["Pares de alta disponibilidade"]consulte .
+
+Zonas de disponibilidade:: Este modelo de implantação de HA usa vários AZs para garantir alta disponibilidade de seus dados. Você deve usar uma AZ dedicada para cada instância do Cloud Volumes ONTAP e a instância do mediador, que fornece um canal de comunicação entre o par de HA.
+Endereços IP flutuantes para dados nas e gerenciamento de cluster/SVM:: As configurações DE HA em vários AZs usam endereços IP flutuantes que migram entre nós se ocorrerem falhas. Eles não são diretamente acessíveis de fora da VPC, a menos que você link:task_setting_up_transit_gateway.html["Configure um gateway de trânsito da AWS"].
++
+--
+Um endereço IP flutuante é para gerenciamento de cluster, um para dados NFS/CIFS no nó 1 e outro para dados NFS/CIFS no nó 2. Um quarto endereço IP flutuante para gerenciamento de SVM é opcional.
+
+
+NOTE: Um endereço IP flutuante é necessário para o LIF de gerenciamento da SVM se você usar o SnapDrive para Windows ou SnapCenter com o par de HA. Se você não especificar o endereço IP ao implantar o sistema, poderá criar o LIF mais tarde. Para obter detalhes, link:task_setting_up_ontap_cloud.html["Configurar o Cloud Volumes ONTAP"]consulte .
+
+Você precisa inserir os endereços IP flutuantes no Cloud Manager ao criar um ambiente de trabalho do Cloud Volumes ONTAP HA. O Cloud Manager aloca os endereços IP para o par de HA quando ele inicia o sistema.
+
+Os endereços IP flutuantes devem estar fora dos blocos CIDR para todos os VPCs na região da AWS na qual você implementa a configuração de HA. Pense nos endereços IP flutuantes como uma sub-rede lógica que está fora dos VPCs em sua região.
+
+O exemplo a seguir mostra a relação entre endereços IP flutuantes e os VPCs em uma região da AWS. Enquanto os endereços IP flutuantes estão fora dos blocos CIDR para todos os VPCs, eles são roteáveis para sub-redes através de tabelas de rota.
+
+image:diagram_ha_floating_ips.png["Uma imagem conceitual mostrando os blocos CIDR para cinco VPCs em uma região da AWS e três endereços IP flutuantes que estão fora dos blocos CIDR dos VPCs."]
+
+
+NOTE: O Cloud Manager cria automaticamente endereços IP estáticos para o acesso iSCSI e para o acesso nas de clientes fora da VPC. Você não precisa atender a nenhum requisito para esses tipos de endereços IP.
+
+--
+Gateway de trânsito para habilitar o acesso IP flutuante de fora da VPC:: link:task_setting_up_transit_gateway.html["Configure um gateway de trânsito da AWS"] Para habilitar o acesso aos endereços IP flutuantes de um par de HA de fora da VPC onde o par de HA reside.
+Tabelas de rotas:: Depois de especificar os endereços IP flutuantes no Cloud Manager, você precisa selecionar as tabelas de rota que devem incluir rotas para os endereços IP flutuantes. Isso permite o acesso do cliente ao par de HA.
++
+--
+Se você tiver apenas uma tabela de rota para as sub-redes na VPC (a tabela de rotas principal), o Cloud Manager adicionará automaticamente os endereços IP flutuantes a essa tabela de rotas. Se tiver mais de uma tabela de rota, é muito importante selecionar as tabelas de rota corretas ao iniciar o par HA. Caso contrário, alguns clientes podem não ter acesso ao Cloud Volumes ONTAP.
+
+Por exemplo, você pode ter duas sub-redes associadas a tabelas de rota diferentes. Se você selecionar a tabela de rota A, mas não a tabela de rota B, os clientes na sub-rede associada à tabela de rota A podem acessar o par de HA, mas os clientes na sub-rede associada à tabela de rota B.
+
+Para obter mais informações sobre tabelas de rotas, http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html["Documentação da AWS: Tabelas de rotas"^] consulte .
+
+--
+Conexão com ferramentas de gerenciamento do NetApp:: Para usar as ferramentas de gerenciamento do NetApp com configurações de HA em vários AZs, você tem duas opções de conexão:
++
+--
+. Implante as ferramentas de gerenciamento do NetApp em uma VPC diferente e link:task_setting_up_transit_gateway.html["Configure um gateway de trânsito da AWS"]no . O gateway permite o acesso ao endereço IP flutuante para a interface de gerenciamento de cluster de fora da VPC.
+. Implante as ferramentas de gerenciamento do NetApp na mesma VPC com uma configuração de roteamento semelhante aos clientes nas.
+
+
+--
+
+
+
+
+=== Exemplo de configuração
+
+A imagem a seguir mostra uma configuração de HA ideal na AWS operando como uma configuração ativo-passivo:
+
+image:diagram_ha_networking.png["Imagem conceitual que mostra componentes em uma arquitetura do Cloud Volumes ONTAP HA: Dois nós Cloud Volumes ONTAP e uma instância de mediador, cada um em zonas de disponibilidade separadas."]
+
+
+
+== Exemplo de configurações de VPC
+
+Para entender melhor como você pode implantar o Cloud Manager e o Cloud Volumes ONTAP na AWS, leia as configurações de VPC mais comuns.
+
+* Uma VPC com sub-redes públicas e privadas e um dispositivo NAT
+* Uma VPC com uma sub-rede privada e uma conexão VPN à rede
+
+
+
+
+=== Uma VPC com sub-redes públicas e privadas e um dispositivo NAT
+
+Essa configuração de VPC inclui sub-redes públicas e privadas, um gateway de Internet que coneta a VPC à Internet e um gateway NAT ou instância NAT na sub-rede pública que permite o tráfego de saída da Internet a partir da sub-rede privada. Nessa configuração, você pode executar o Cloud Manager em uma sub-rede pública ou privada, mas a sub-rede pública é recomendada porque permite o acesso de hosts fora da VPC. Em seguida, é possível iniciar instâncias do Cloud Volumes ONTAP na sub-rede privada.
+
+
+NOTE: Em vez de um dispositivo NAT, você pode usar um proxy HTTP para fornecer conetividade à Internet.
+
+Para obter mais detalhes sobre este cenário, http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Scenario2.html["Documentação da AWS: Cenário 2: VPC com sub-redes públicas e privadas (NAT)"^] consulte .
+
+O gráfico a seguir mostra o Cloud Manager em execução em uma sub-rede pública e em sistemas de nó único em execução em uma sub-rede privada:
+
+image:diagram_vpc_public_and_private.png["Esta ilustração mostra o Cloud Manager e uma instância NAT em execução em uma sub-rede pública, e instâncias do Cloud Volumes ONTAP e uma instância do suporte NetApp em execução em uma sub-rede privada."]
+
+
+
+=== Uma VPC com uma sub-rede privada e uma conexão VPN à rede
+
+Essa configuração de VPC é uma configuração de nuvem híbrida na qual o Cloud Volumes ONTAP se torna uma extensão do seu ambiente privado. A configuração inclui uma sub-rede privada e um gateway privado virtual com uma conexão VPN à sua rede. O roteamento através do túnel VPN permite que as instâncias EC2 acessem a Internet através da rede e firewalls. Você pode executar o Cloud Manager na sub-rede privada ou no data center. Em seguida, você iniciaria o Cloud Volumes ONTAP na sub-rede privada.
+
+
+NOTE: Você também pode usar um servidor proxy nesta configuração para permitir o acesso à Internet. O servidor proxy pode estar no data center ou na AWS.
+
+Se você quiser replicar dados entre sistemas FAS em seu data center e sistemas Cloud Volumes ONTAP na AWS, use uma conexão VPN para que o link fique seguro.
+
+Para obter mais detalhes sobre este cenário, http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Scenario4.html["Documentação da AWS: Cenário 4: VPC somente com um Private Subnet e acesso AWS Managed VPN"^] consulte .
+
+O gráfico a seguir mostra o Cloud Manager em execução em seus sistemas de data center e nó único em execução em uma sub-rede privada:
+
+image:diagram_vpc_private.png["Esta ilustração mostra o Cloud Manager em execução em um data center, e as instâncias do Cloud Volumes ONTAP e uma instância do suporte do NetApp em execução em uma sub-rede privada. Há uma conexão VPN entre o data center e o Amazon Web Services."]

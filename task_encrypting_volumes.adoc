@@ -1,0 +1,81 @@
+---
+sidebar: sidebar 
+permalink: task_encrypting_volumes.html 
+keywords: encrypt, encryption, data, volumes, netapp volume encryption, volume encryption, nve, key managers, kmip, key management servers, license, ssl certificates 
+summary: O NetApp volume Encryption é uma tecnologia baseada em software para criptografar dados em repouso um volume de cada vez. Os dados, as cópias Snapshot e os metadados são criptografados. O acesso aos dados é dado por uma chave exclusiva XTS-AES-256, uma por volume. 
+---
+= Criptografia de volumes com o NetApp volume Encryption
+:toc: macro
+:hardbreaks:
+:allow-uri-read: 
+:toc: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+:toc-position: content
+
+
+[role="lead"]
+O NetApp volume Encryption (NVE) é uma tecnologia baseada em software para criptografar dados em repouso, um volume de cada vez. Os dados, as cópias Snapshot e os metadados são criptografados. O acesso aos dados é dado por uma chave exclusiva XTS-AES-256, uma por volume.
+
+.Sobre esta tarefa
+* A partir do Cloud Manager 3,7.1, uma licença de criptografia de volume do NetApp é instalada automaticamente em cada sistema Cloud Volumes ONTAP registrado no suporte do NetApp.
++
+** link:task_adding_nss_accounts.html["Adicionar contas do site de suporte da NetApp ao Cloud Manager"]
+** link:task_registering.html["Registar sistemas de pagamento conforme o uso"]
++
+
+NOTE: O Cloud Manager não instala a licença NVE em sistemas que residem na região da China.
+
+
+
+* Neste momento, o Cloud Volumes ONTAP suporta encriptação de volume NetApp com um servidor de gestão de chaves externo. Um Gerenciador de chaves integrado não é suportado.
+* Você precisa configurar a criptografia de volume do NetApp a partir da CLI do ONTAP.
++
+Em seguida, você pode usar a CLI ou o System Manager para habilitar a criptografia em volumes específicos. O Cloud Manager não oferece suporte à criptografia de volume NetApp a partir de sua interface de usuário e de suas APIs.
+
+
+
+link:concept_security.html["Saiba mais sobre as tecnologias de criptografia suportadas"].
+
+.Passos
+. Reveja a lista de gestores-chave suportados no http://mysupport.netapp.com/matrix["Ferramenta de Matriz de interoperabilidade do NetApp"^].
++
+
+TIP: Procure a solução *Key Managers*.
+
+. link:task_connecting_to_otc.html["Conete-se à CLI do Cloud Volumes ONTAP"^].
+. Instale certificados SSL e conete-se aos servidores externos de gerenciamento de chaves.
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-nve/GUID-DD718B42-038D-4009-84FF-20BBD6530BC2.html["Guia de alimentação de criptografia ONTAP 9 NetApp: Configuração do gerenciamento de chaves externas"^]
+
+. Crie um novo volume criptografado ou converta um volume não criptografado existente usando a CLI ou o System Manager.
++
+** CLI:
++
+*** Para novos volumes, use o comando *volume create* com o parâmetro -criptografar.
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-nve/GUID-A5D3FDEF-CA10-4A54-9E17-DB9E9954082E.html["Guia de energia de criptografia ONTAP 9 NetApp: Habilitando a criptografia em um novo volume"^]
+
+*** Para volumes existentes, use o comando *início da conversão de criptografia de volume*.
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-nve/GUID-1468CE48-A0D9-4D45-BF78-A11C26724051.html["Guia de energia de criptografia ONTAP 9 NetApp: Habilitando a criptografia em um volume existente com o comando de início de conversão de criptografia de volume"^]
+
+
+
+** System Manager:
++
+*** Para novos volumes, clique em *armazenamento > volumes > criar > criar FlexVol* e selecione *encriptado*.
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.onc-sm-help-950/GUID-3FA865E2-AE14-40A9-BF76-A2D7EB44D387.html["Gerenciamento de clusters do ONTAP 9 usando o Gerenciador de sistemas: Criando volumes do FlexVol"^]
+
+*** Para volumes existentes, selecione o volume, clique em *Editar* e, em seguida, selecione *encriptado*.
++
+http://docs.netapp.com/ontap-9/topic/com.netapp.doc.onc-sm-help-950/GUID-906E88E4-8CE9-465F-8AC7-0C089080B2C5.html["Gerenciamento de cluster do ONTAP 9 usando o Gerenciador de sistema: Editando propriedades de volume"^]
+
+
+
+
+
+

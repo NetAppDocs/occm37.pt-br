@@ -1,0 +1,68 @@
+---
+sidebar: sidebar 
+permalink: task_adding_gcp_accounts.html 
+keywords: permissions, gcp, data tiering, tiering, setup, requirements, account for data tiering, account for tiering, interoperable, interoperability, interoperable storage access keys, access keys 
+summary: É necessário adicionar uma conta do Google Cloud Platform ao Cloud Manager para habilitar a disposição de dados em categorias em um sistema Cloud Volumes ONTAP. A categorização de dados categoriza automaticamente os dados inativos no storage de objetos de baixo custo, permitindo que você recupere espaço no storage primário e diminua o storage secundário. 
+---
+= Configuração e adição de contas do GCP ao Cloud Manager
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Se você quiser habilitar link:concept_data_tiering.html["categorização de dados"] em um sistema Cloud Volumes ONTAP, precisará fornecer ao Cloud Manager uma chave de acesso ao storage para uma conta de serviço que tenha permissões de administrador de storage. O Cloud Manager usa as chaves de acesso para configurar e gerenciar um bucket do Cloud Storage para categorização de dados.
+
+
+
+== Configurar uma conta de serviço e chaves de acesso para o Google Cloud Storage
+
+Uma conta de serviço permite que o Cloud Manager autentique e acesse buckets do Cloud Storage usados para categorização de dados. As chaves são necessárias para que o Google Cloud Storage saiba quem está fazendo a solicitação.
+
+.Passos
+. Abra o console do IAM do GCP e https://cloud.google.com/iam/docs/creating-custom-roles#creating_a_custom_role["Crie uma conta de serviço que tenha a função Administrador do storage"^]o .
++
+image:screenshot_gcp_service_account_role.gif["Uma captura de tela do console do IAM do GCP que mostra a seleção da função Administrador do storage para uma conta de serviço."]
+
+. Vá para https://console.cloud.google.com/storage/settings["Configurações de armazenamento do GCP"^].
+. Se você for solicitado, selecione um projeto.
+. Clique no separador *interoperabilidade*.
+. Se ainda não o tiver feito, clique em *Ativar acesso à interoperabilidade*.
+. Em *chaves de acesso para contas de serviço*, clique em *criar uma chave para uma conta de serviço*.
+. Selecione a conta de serviço criada na etapa 1.
++
+image:screenshot_gcp_access_key.gif["Uma captura de tela do console de armazenamento do GCP que mostra uma conta de serviço selecionada para uma nova chave de acesso."]
+
+. Clique em *criar chave*.
+. Copie a chave de acesso e o segredo.
++
+Você precisará inserir essas informações no Cloud Manager ao adicionar a conta do GCP para categorização de dados.
+
+
+
+
+
+== Adicionando uma conta do GCP ao Cloud Manager
+
+Agora que você tem uma chave de acesso para uma conta de serviço, pode adicioná-la ao Cloud Manager.
+
+.Passos
+. No canto superior direito do console do Cloud Manager, clique no ícone Configurações e selecione *Contas de suporte e provedores de nuvem*.
++
+image:screenshot_settings_icon.gif["Uma captura de tela que mostra o ícone Configurações no canto superior direito do console do Cloud Manager."]
+
+. Clique em *Adicionar nova conta* e selecione *GCP*.
+. Introduza a chave de acesso e o segredo da conta de serviço.
++
+As chaves permitem que o Cloud Manager configure um bucket do Cloud Storage para categorização de dados.
+
+. Confirme se os requisitos da política foram atendidos e clique em *criar conta*.
+
+
+.O que se segue?
+Agora é possível habilitar a disposição de dados em categorias em volumes individuais ao criá-los, modificá-los ou replicá-los. Para obter detalhes, link:task_tiering.html["Disposição em camadas dos dados inativos em storage de objetos de baixo custo"]consulte .
+
+Mas antes de fazer isso, certifique-se de que a sub-rede na qual o Cloud Volumes ONTAP reside esteja configurada para o acesso privado do Google. Para obter instruções, https://cloud.google.com/vpc/docs/configure-private-google-access["Documentação do Google Cloud: Configurando o acesso privado do Google"^] consulte .

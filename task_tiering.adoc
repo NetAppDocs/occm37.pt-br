@@ -1,0 +1,198 @@
+---
+sidebar: sidebar 
+permalink: task_tiering.html 
+keywords: tier, tiering, cold data, hot data, storage tiering, data tiering, S3 tiering, fabricpool, fabric pool, s3 endpoint, endpoint, connection, performance tier, capacity tier, object store, azure tiering, blob tiering, azure blob, container, inactive, gcp, tiering in gcp, tiering requirements 
+summary: Você pode reduzir os custos de storage combinando uma camada de desempenho SSD ou HDD para dados ativos com uma camada de capacidade de storage de objetos para dados inativos. 
+---
+= Disposição em camadas dos dados inativos em storage de objetos de baixo custo
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Você pode reduzir os custos de storage combinando uma camada de desempenho SSD ou HDD para dados ativos com uma camada de capacidade de storage de objetos para dados inativos. Para obter uma visão geral de alto nível, link:concept_data_tiering.html["Visão geral de categorização de dados"]consulte .
+
+Para configurar a disposição de dados em categorias, basta fazer o seguinte:
+
+
+
+==== image:number1.png["Número 1"] Escolha uma configuração suportada
+
+[role="quick-margin-para"]
+A maioria das configurações é compatível. Se você tiver um sistema padrão, Premium ou BYOL da Cloud Volumes ONTAP executando a versão mais recente, então você deve estar pronto. link:task_tiering.html#configurations-that-support-data-tiering["Saiba mais"].
+
+
+
+==== image:number2.png["Número 2"] Garanta a conectividade entre o Cloud Volumes ONTAP e o storage de objetos
+
+[role="quick-margin-list"]
+* Para a AWS, você precisará de um VPC Endpoint para S3. <<Requirements for tiering data in AWS,Saiba mais>>.
+* Para o Azure, você não precisará fazer nada, desde que o Cloud Manager tenha as permissões necessárias. <<Requirements for tiering data in Microsoft Azure,Saiba mais>>.
+* Para o GCP, você precisa adicionar uma conta do GCP ao Cloud Manager e configurar a sub-rede para acesso privado ao Google. <<Requirements for tiering data in Google Cloud Platform,Saiba mais>>.
+
+
+
+
+==== image:number3.png["Número 3"] Escolha uma política de disposição em categorias ao criar, modificar ou replicar um volume
+
+[role="quick-margin-para"]
+O Cloud Manager solicita que você escolha uma política de disposição em categorias ao criar, modificar ou replicar um volume.
+
+[role="quick-margin-list"]
+* link:task_tiering.html#tiering-data-from-read-write-volumes["Disposição em camadas dos dados em volumes de leitura-gravação"]
+* link:task_tiering.html#tiering-data-from-data-protection-volumes["Disposição de dados em camadas em volumes de proteção de dados"]
+
+
+[NOTE]
+.O que não é necessário para a disposição em camadas de dados. 8217
+====
+* Não é necessário instalar uma licença de recurso para habilitar a disposição em camadas de dados.
+* Não é necessário criar a categoria de capacidade (um bucket do S3, contêiner do Blob do Azure ou bucket do GCP). O Cloud Manager faz isso por você.
+
+
+====
+
+
+== Configurações compatíveis com categorização de dados
+
+Você pode habilitar a disposição de dados em categorias usando configurações e recursos específicos:
+
+* A disposição de dados em categorias é compatível com o padrão Cloud Volumes ONTAP, Premium e BYOL, começando com as seguintes versões:
++
+** Versão 9,2 na AWS
+** Versão 9,4 no Azure com sistemas de nó único
+** Versão 9,6 no Azure com pares de HA
+** Versão 9,6 no GCP
++
+
+NOTE: A disposição de dados em categorias não é suportada no Azure com o tipo de máquina virtual DS3_v2.
+
+
+
+* Na AWS, o nível de performance pode ser SSDs de uso geral, SSDs IOPS provisionados ou HDDs otimizados para taxa de transferência.
+* No Azure, o nível de desempenho pode ser discos gerenciados SSD Premium, discos gerenciados SSD padrão ou discos gerenciados HDD padrão.
+* No GCP, o nível de performance pode ser SSDs ou HDDs (discos padrão).
+* A disposição de dados em categorias é compatível com tecnologias de criptografia.
+* O thin Provisioning deve estar ativado em volumes.
+
+
+
+
+== Requisitos para categorizar dados inativos no AWS S3
+
+Certifique-se de que o Cloud Volumes ONTAP tem uma ligação ao S3. A melhor maneira de fornecer essa conexão é criando um endpoint VPC para o serviço S3. Para obter instruções, https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpce-gateway.html#create-gateway-endpoint["Documentação da AWS: Criando um endpoint do Gateway"^] consulte .
+
+Ao criar o endpoint VPC, certifique-se de selecionar a tabela região, VPC e rota que corresponde à instância do Cloud Volumes ONTAP. Você também deve modificar o grupo de segurança para adicionar uma regra HTTPS de saída que permita o tráfego para o endpoint S3. Caso contrário, o Cloud Volumes ONTAP não pode se conetar ao serviço S3.
+
+Se tiver algum problema, https://aws.amazon.com/premiumsupport/knowledge-center/connect-s3-vpc-endpoint/["AWS Support Knowledge Center: Por que não consigo me conetar a um bucket do S3 usando um endpoint VPC de gateway?"^]consulte .
+
+
+
+== Requisitos para categorizar dados inativos no storage Azure Blob
+
+Você não precisa configurar uma conexão entre o nível de performance e o nível de capacidade, desde que o Cloud Manager tenha as permissões necessárias. O Cloud Manager habilita um endpoint de serviço VNet para você se a política do Cloud Manager tiver estas permissões:
+
+[source, json]
+----
+"Microsoft.Network/virtualNetworks/subnets/write",
+"Microsoft.Network/routeTables/join/action",
+----
+As permissões estão incluídas no último https://mysupport.netapp.com/cloudontap/iampolicies["Política do Cloud Manager"].
+
+
+
+== Requisitos para categorizar dados inativos em um bucket do Google Cloud Storage
+
+* Você precisa adicionar uma conta do Google Cloud Platform ao Cloud Manager inserindo chaves de acesso ao armazenamento de uma conta de serviço. As chaves permitem que o Cloud Manager configure um bucket do Cloud Storage para categorização de dados. Para obter instruções, link:task_adding_gcp_accounts.html["Configuração e adição de contas do GCP ao Cloud Manager"]consulte .
+* A sub-rede em que o Cloud Volumes ONTAP reside deve ser configurada para o acesso privado do Google. Para obter instruções, https://cloud.google.com/vpc/docs/configure-private-google-access["Documentação do Google Cloud: Configurando o acesso privado do Google"^] consulte .
+
+
+
+
+== Disposição em camadas dos dados de volumes de leitura-gravação
+
+O Cloud Volumes ONTAP pode categorizar dados inativos em volumes de leitura-gravação para storage de objetos econômico, liberando a categoria de performance para dados ativos.
+
+.Passos
+. No ambiente de trabalho, crie um novo volume ou altere o nível de um volume existente:
++
+[cols="30,70"]
+|===
+| Tarefa | Ação 
+
+
+| Crie um novo volume | Clique em *Adicionar novo volume*. 
+
+
+| Modificar um volume existente | Selecione o volume e clique em *alterar tipo de disco e Política de disposição em categorias*. 
+|===
+. Selecione a política apenas captura instantânea ou a política automática.
++
+Para obter uma descrição dessas políticas, link:concept_data_tiering.html["Visão geral de categorização de dados"]consulte .
+
++
+*Exemplo*
+
++
+image:screenshot_tiered_storage.gif["Captura de tela que mostra o ícone para habilitar a disposição em camadas no armazenamento de objetos."]
+
++
+O Cloud Manager cria um novo agregado para o volume se um agregado habilitado para categorização de dados ainda não existir.
+
++
+
+TIP: Se você preferir criar agregados, habilite a disposição em categorias de dados em agregados ao criá-los.
+
+
+
+
+
+== Disposição de dados em camadas em volumes de proteção de dados
+
+O Cloud Volumes ONTAP pode categorizar dados de um volume de proteção de dados em uma categoria de capacidade. Se você ativar o volume de destino, os dados serão movidos gradualmente para o nível de performance à medida que forem lidos.
+
+.Passos
+. Na página ambientes de trabalho, selecione o ambiente de trabalho que contém o volume de origem e, em seguida, arraste-o para o ambiente de trabalho para o qual pretende replicar o volume.
+. Siga as instruções até chegar à página de disposição em categorias e habilitar a disposição de dados em categorias no storage de objetos.
++
+*Exemplo*
+
++
+image:screenshot_replication_tiering.gif["Captura de tela que mostra a opção de disposição em camadas S3 ao replicar um volume."]
+
++
+Para obter ajuda com a replicação de dados, link:task_replicating_data.html["Replicação de dados de e para a nuvem"]consulte .
+
+
+
+
+
+== Alteração do nível de disposição em camadas na AWS ou Azure
+
+Ao habilitar a disposição de dados em categorias, o Cloud Volumes ONTAP classifica dados inativos na classe de storage S3 _Standard_ na AWS ou na camada de storage _hot_ no Azure. Depois de implantar o Cloud Volumes ONTAP, você poderá reduzir os custos de storage alterando o nível de disposição em categorias para dados inativos que não foram acessados por 30 dias. Os custos de acesso são maiores se você acessar os dados, então você deve levar isso em consideração antes de alterar o nível de disposição em categorias.
+
+
+NOTE: Não é possível alterar o nível de disposição em camadas no GCP porque somente a classe de armazenamento _Regional_ é suportada no momento.
+
+.Sobre esta tarefa
+O nível de disposição em camadas é todo o sistema: ​it não é por volume.
+
+Na AWS, você pode alterar o nível de disposição em categorias para que os dados inativos sejam movidos para uma das seguintes classes de armazenamento após 30 dias de inatividade:
+
+* Disposição em camadas inteligente
+* Acesso padrão-infrequente
+* Uma zona de acesso pouco frequente
+
+
+No Azure, você pode alterar o nível de disposição em camadas para que os dados inativos sejam movidos para a camada de storage _cool_ após 30 dias de inatividade.
+
+Para obter mais informações sobre como os níveis de disposição em camadas funcionam, link:concept_data_tiering.html["Visão geral de categorização de dados"]consulte .
+
+.Passos
+. No ambiente de trabalho, clique no ícone de menu e, em seguida, clique em *S3 Storage classes* ou *Blob Storage Tiering*.
+. Escolha o nível de disposição em camadas e clique em *Salvar*.
+

@@ -1,0 +1,34 @@
+---
+sidebar: sidebar 
+permalink: reference_infrastructure_as_code.html 
+keywords: ansible, playbook, automation 
+summary: As equipes de DevOps usam diversas ferramentas para automatizar a configuração de novos ambientes, o que permite que elas tratem a infraestrutura como código. Duas dessas ferramentas são o Ansible e o Terraform. Desenvolvemos amostras do Ansible e do Terraform que a equipe de DevOps pode usar com o Cloud Manager para automatizar e integrar o Cloud Volumes ONTAP à infraestrutura como código. 
+translate: false 
+---
+= Amostras de automação para infraestrutura como código
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+Use os recursos desta página para obter ajuda para integrar o Cloud Manager e o Cloud Volumes ONTAP ao https://www.netapp.com/us/info/what-is-infrastructure-as-code-iac.aspx["infraestrutura como código"^] seu .
+
+As equipes de DevOps usam diversas ferramentas para automatizar a configuração de novos ambientes, o que permite que elas tratem a infraestrutura como código. Duas dessas ferramentas são o Ansible e o Terraform. Desenvolvemos amostras do Ansible e do Terraform que a equipe de DevOps pode usar com o Cloud Manager para automatizar e integrar o Cloud Volumes ONTAP à infraestrutura como código.
+
+https://github.com/edarzi/cloud-manager-automation-samples["Veja as amostras de automação"^].
+
+Por exemplo, você pode usar exemplos de playbooks do Ansible para implantar o Cloud Manager e o Cloud Volumes ONTAP, criar um agregado e criar um volume. Modifique as amostras para o seu ambiente ou crie novos playbooks com base nas amostras.
+
+* Ligações relacionadas*
+
+* https://cloud.netapp.com/blog/using-cloud-manager-rest-apis-with-federated-access["Blog da nuvem NetApp: Usando APIs REST do Cloud Manager com acesso federado"^]
+* https://cloud.netapp.com/blog/cloud-automation-with-cloud-volumes-ontap-rest["Blog de nuvem da NetApp: Automação da nuvem com Cloud Volumes ONTAP e REST"^]
+* https://cloud.netapp.com/blog/automated-data-cloning-for-cloud-based-testing["Blog de nuvem da NetApp: Clonagem automatizada de dados para testes baseados na nuvem de aplicações de software"^]
+* https://blog.netapp.com/infrastructure-as-code-accelerated-with-ansible-netapp/["Blog do NetApp: Aceleração da infraestrutura como código (IAC) com NetApp"^]
+* https://netapp.io/configuration-management-and-automation/["NetApp thePub: Gerenciamento de configuração  Automação com Ansible"^]
+* https://netapp.io/2019/03/25/simplicity-at-its-finest-roles-for-ansible-ontap-use/["NetApp thePub: Funções para uso do Ansible ONTAP"^]
+

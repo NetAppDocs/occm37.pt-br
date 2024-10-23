@@ -1,0 +1,49 @@
+---
+sidebar: sidebar 
+permalink: task_restoring.html 
+keywords: cloud manager, restore, restoring, restore cloud manager, back up, backup, backups, back up cloud manager 
+summary: As contas do NetApp Cloud Central facilitam a restauração de uma configuração do Cloud Manager. A conta é um serviço executado no Cloud Central, de modo que os usuários, espaços de trabalho e conetores de serviço associados à conta estejam sempre acessíveis. Mesmo que seu sistema Cloud Manager tenha sido excluído acidentalmente. 
+---
+= Restaurar o Cloud Manager
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+O link:concept_cloud_central_accounts.html["Conta do NetApp Cloud Central"]facilita a restauração de uma configuração do Cloud Manager. A conta é um serviço executado no Cloud Central, de modo que os usuários, espaços de trabalho e conetores de serviço associados à conta estejam sempre acessíveis. Mesmo que seu sistema Cloud Manager tenha sido excluído acidentalmente.
+
+
+NOTE: A partir da versão 3.7.1, o Cloud Manager não suporta mais o download de um backup e o uso dele para restaurar sua configuração. Você precisa seguir estas etapas para restaurar o Cloud Manager.
+
+.Passos
+. Implante um novo sistema do Cloud Manager na sua conta existente do Cloud Central.
++
+link:reference_deployment_overview.html["Opções de implantação"]
+
+. Adicione suas contas de provedores de nuvem e contas do site de suporte da NetApp ao Cloud Manager.
++
+Essa etapa prepara o Cloud Manager para que você possa criar sistemas Cloud Volumes ONTAP adicionais no seu provedor de nuvem.
+
++
+É importante concluir esta etapa se você usou chaves da AWS para implantar um sistema Cloud Volumes ONTAP existente que deseja descobrir neste novo sistema do Cloud Manager. O Cloud Manager precisa das chaves da AWS para descobrir e gerenciar adequadamente o Cloud Volumes ONTAP.
+
++
+** link:task_adding_aws_accounts.html["Adicionando contas da AWS ao Cloud Manager"]
+** link:task_adding_azure_accounts.html["Adicionando contas do Azure ao Cloud Manager"]
+** link:task_adding_nss_accounts.html["Adicionar contas do site de suporte da NetApp ao Cloud Manager"]
+
+
+. Redescubra seus ambientes de trabalho: Sistemas Cloud Volumes ONTAP, clusters locais e configurações de storage privado da NetApp para nuvem.
++
+** link:task_adding_ontap_cloud.html["Adição de sistemas Cloud Volumes ONTAP existentes ao Cloud Manager"]
+** link:task_discovering_ontap.html#discovering-ontap-clusters["Descobrindo clusters do ONTAP"]
+
+
+
+
+.Resultado
+Sua configuração do Cloud Manager agora é restaurada com suas contas, configurações e ambientes de trabalho.

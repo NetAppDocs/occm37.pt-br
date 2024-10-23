@@ -1,0 +1,130 @@
+---
+sidebar: sidebar 
+permalink: task_launching_azure_mktp.html 
+keywords: install, installation, installing, marketplace, azure, deploy, virtual machine, permissions 
+summary: É melhor implantar o Cloud Manager no Azure usando o NetApp Cloud Central, mas você pode implantá-lo no Azure Marketplace, se necessário. 
+---
+= Implantação do Cloud Manager no Azure Marketplace
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+É melhor implantar o Cloud Manager no Azure usando https://cloud.netapp.com["Centro de nuvem da NetApp"^]o , mas você pode implantá-lo no Azure Marketplace, se necessário.
+
+Instruções separadas estão disponíveis para implantar o Cloud Manager no link:task_installing_azure_gov.html["Regiões do governo dos EUA do Azure"] e no link:task_installing_azure_germany.html["Regiões Azure Alemanha"].
+
+
+TIP: Se você implantar o Cloud Manager a partir do Azure Marketplace, o Cloud Manager ainda será integrado ao NetApp Cloud Central. link:concept_cloud_central.html["Saiba mais sobre a integração"].
+
+
+
+== Implantação do Cloud Manager no Azure
+
+Você precisa instalar e configurar o Cloud Manager para poder usá-lo para iniciar o Cloud Volumes ONTAP no Azure.
+
+.Passos
+. https://azure.microsoft.com/en-us/marketplace/partners/netapp/netapp-oncommand-cloud-manager/["Vá para a página do Azure Marketplace para o Cloud Manager"^].
+. Clique em *Obtenha-o agora* e, em seguida, clique em *continuar*.
+. No portal do Azure, clique em *criar* e siga as etapas para configurar a máquina virtual.
++
+Observe o seguinte ao configurar a VM:
+
++
+** O Cloud Manager pode ter um desempenho ideal com discos HDD ou SSD.
+** Escolha um dos tamanhos de máquina virtual recomendados: A2, D2 v2 ou D2 v3 (com base na disponibilidade).
+** Para o grupo de segurança de rede, o Cloud Manager requer conexões de entrada usando SSH, HTTP e HTTPS.
++
+link:reference_security_groups_azure.html["Saiba mais sobre as regras do grupo de segurança para o Cloud Manager"].
+
+** Em *Gerenciamento*, ative *identidade gerenciada atribuída ao sistema* para o Cloud Manager selecionando *On*.
++
+Essa configuração é importante porque uma identidade gerenciada permite que a máquina virtual do Cloud Manager se identifique no Azure ative Directory sem fornecer credenciais. https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview["Saiba mais sobre identidades gerenciadas para recursos do Azure"^].
+
+
+
+. Na página *Revisão e criação*, revise suas seleções e clique em *criar* para iniciar a implantação.
++
+O Azure implanta a máquina virtual com as configurações especificadas. A máquina virtual e o software Cloud Manager devem ser executados em aproximadamente cinco minutos.
+
+. Abra um navegador da Web a partir de um host que tenha uma conexão com a máquina virtual do Cloud Manager e insira o seguinte URL:
++
+http://_ipaddress_:80[]
+
+. Depois de fazer login, configure o Cloud Manager:
++
+.. Especifique a conta do Cloud Central a ser associada a este sistema do Cloud Manager.
++
+link:concept_cloud_central_accounts.html["Saiba mais sobre as contas do Cloud Central"].
+
+.. Introduza um nome para o sistema.
++
+image:screenshot_set_up_cloud_manager.gif["Uma captura de tela que mostra a tela Configurar o Cloud Manager que permite selecionar uma conta do Cloud Central e nomear o sistema do Cloud Manager."]
+
+
+
+
+
+.Resultado
+O Cloud Manager agora está instalado e configurado. Você deve conceder permissões do Azure antes que os usuários possam implantar o Cloud Volumes ONTAP no Azure.
+
+
+
+== Concessão de permissões do Azure ao Cloud Manager
+
+Quando você implantou o Cloud Manager no Azure, você deve ter habilitado um https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview["identidade gerenciada atribuída ao sistema"^]. agora você deve conceder as permissões necessárias do Azure criando uma função personalizada e atribuindo a função à máquina virtual do Cloud Manager para uma ou mais assinaturas.
+
+.Passos
+. Crie uma função personalizada usando a política do Cloud Manager:
++
+.. Faça download do https://mysupport.netapp.com/cloudontap/iampolicies["Política do Azure do Cloud Manager"^].
+.. Modifique o arquivo JSON adicionando IDs de assinatura do Azure ao escopo atribuível.
++
+Você deve adicionar o ID para cada assinatura do Azure a partir da qual os usuários criarão sistemas Cloud Volumes ONTAP.
+
++
+*Exemplo*
+
++
+"AssignableScopes": [ "/Subscrições/d333af45-0d07-4154-943d-c25fbzzzzzzz", "/Subscrições/54b91999-b3e6-4599-908e-416e0zzzzzzz", "/Subscrições/398e471c-3b42-4ae7-9b59-ce5bbzzzzzzz"
+
+.. Use o arquivo JSON para criar uma função personalizada no Azure.
++
+O exemplo a seguir mostra como criar uma função personalizada usando a CLI do Azure 2,0:
+
++
+Criar --role-definition C: /Policy_for_cloud_Manager_Azure_3,7.4.json*
+
++
+Agora você deve ter uma função personalizada chamada Operador do Gerenciador de nuvem do OnCommand que pode atribuir à máquina virtual do Gerenciador de nuvem.
+
+
+
+. Atribua a função à máquina virtual do Cloud Manager para uma ou mais assinaturas:
++
+.. Abra o serviço *assinaturas* e selecione a assinatura na qual deseja implantar sistemas Cloud Volumes ONTAP.
+.. Clique em *Access Control (IAM)*.
+.. Clique em *Adicionar* > *Adicionar atribuição de função* e, em seguida, adicione as permissões:
++
+*** Selecione a função *Operador do Gerenciador de nuvem da OnCommand*.
++
+
+NOTE: Operador do Gerenciador de nuvem do OnCommand é o nome padrão fornecido no https://mysupport.netapp.com/info/web/ECMP11022837.html["Política do Cloud Manager"]. Se você escolher um nome diferente para a função, selecione esse nome em vez disso.
+
+*** Atribua acesso a uma *Máquina Virtual*.
+*** Selecione a assinatura na qual a máquina virtual do Cloud Manager foi criada.
+*** Selecione a máquina virtual do Cloud Manager.
+*** Clique em *Salvar*.
+
+
+.. Se você quiser implantar o Cloud Volumes ONTAP a partir de assinaturas adicionais, mude para essa assinatura e repita essas etapas.
+
+
+
+
+.Resultado
+O Cloud Manager agora tem as permissões de que ele precisa para implantar e gerenciar o Cloud Volumes ONTAP no Azure.
